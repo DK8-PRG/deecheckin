@@ -1,10 +1,15 @@
-import React from "react";
 import AdminSidebar from "../../../../components/AdminSidebar";
-import { useTranslations } from "next-intl";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { getTranslations } from "next-intl/server";
+import { supabase } from "@/lib/supabaseClient";
 
-const PropertiesPage = () => {
-  const t = useTranslations();
+export default async function PropertiesPage() {
+  const t = await getTranslations();
+  // Načtení dat z tabulky 'properties'
+  const { data: properties, error } = await supabase
+    .from("properties")
+    .select();
+
   return (
     <div className="flex min-h-screen">
       <AdminSidebar />
@@ -13,13 +18,19 @@ const PropertiesPage = () => {
           <LanguageSwitcher />
         </div>
         <h1 className="text-2xl font-bold mb-4">{t("accommodationUnits")}</h1>
-        {/* TODO: Výpis a přidání ubytovacích jednotek */}
-        <div className="border rounded p-4 text-gray-500">
-          Zde bude výpis a přidání ubytovacích jednotek.
+        <div className="border rounded p-4">
+          {error && <div className="text-red-500">{error.message}</div>}
+          <ul className="list-disc pl-6">
+            {properties?.length ? (
+              properties.map((p: { id: string; name: string }) => (
+                <li key={p.id}>{p.name}</li>
+              ))
+            ) : (
+              <li className="text-gray-500">Žádné jednotky</li>
+            )}
+          </ul>
         </div>
       </main>
     </div>
   );
-};
-
-export default PropertiesPage;
+}
