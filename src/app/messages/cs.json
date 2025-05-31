@@ -1,0 +1,14 @@
+{
+  "firstName": "Jméno",
+  "lastName": "Příjmení",
+  "submit": "Odeslat",
+  "birthDate": "Datum narození",
+  "confirm": "Potvrdit",
+  "checkin": "Check-in",
+  "accommodationUnits": "Ubytovací jednotky",
+  "reservations": "Rezervace",
+  "dashboard": "Přehled",
+  "getStarted": "Začněte úpravou souboru",
+  "saveAndSee": "Uložte a ihned uvidíte změny.",
+  "welcome": "Vítejte"
+}

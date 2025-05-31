@@ -1,0 +1,14 @@
+{
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "submit": "Submit",
+  "birthDate": "Birth Date",
+  "confirm": "Confirm",
+  "checkin": "Check-in",
+  "accommodationUnits": "Accommodation Units",
+  "reservations": "Reservations",
+  "dashboard": "Dashboard",
+  "getStarted": "Get started by editing",
+  "saveAndSee": "Save and see your changes instantly.",
+  "welcome": "Welcome"
+}
