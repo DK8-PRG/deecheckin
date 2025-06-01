@@ -1,5 +1,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
+import { PropertiesProvider } from "@/context/PropertiesContext";
+import { ReservationsProvider } from "@/context/ReservationsContext";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -19,7 +21,9 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+          <PropertiesProvider>
+            <ReservationsProvider>{children}</ReservationsProvider>
+          </PropertiesProvider>
         </NextIntlClientProvider>
       </body>
     </html>

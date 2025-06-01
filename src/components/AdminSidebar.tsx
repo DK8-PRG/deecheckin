@@ -2,6 +2,7 @@
 import React from "react";
 import { Link, usePathname } from "../i18n/navigation";
 import { useTranslations } from "next-intl";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const navItems = [
   { href: "/dashboard", labelKey: "dashboard" },
@@ -16,6 +17,9 @@ const AdminSidebar = () => {
   return (
     <aside className="w-64 bg-gray-100 h-screen p-6 border-r flex flex-col">
       <div className="text-xl font-bold mb-8">DeeCheckIn Admin</div>
+      <div className="mb-8">
+        <LanguageSwitcher />
+      </div>
       <nav className="flex flex-col gap-4">
         {navItems.map((item) => (
           <Link
