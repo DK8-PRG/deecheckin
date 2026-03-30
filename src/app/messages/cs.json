@@ -10,5 +10,235 @@
   "dashboard": "Přehled",
   "getStarted": "Začněte úpravou souboru",
   "saveAndSee": "Uložte a ihned uvidíte změny.",
-  "welcome": "Vítejte"
+  "welcome": "Vítejte",
+  "guest": "Host",
+  "checkIn": "Příjezd",
+  "checkOut": "Odjezd",
+  "propertyId": "ID Jednotky",
+  "bookNumber": "Číslo rezervace",
+  "bookedBy": "Rezervoval",
+  "bookedOn": "Datum rezervace",
+  "price": "Cena",
+  "people": "Osoby",
+  "paymentStatus": "Stav platby",
+  "durationNights": "Počet nocí",
+  "rooms": "Pokoje",
+  "source": "Zdroj",
+  "status": "Stav",
+  "actions": "Akce",
+  "valueNotSet": "Hodnota nenastavena",
+  "checkinTitle": "Online Check-in",
+  "reservationNumberLabel": "Číslo rezervace",
+  "reservationNumberPlaceholder": "Zadejte číslo vaší rezervace",
+  "search": "Hledat",
+  "searching": "Hledám...",
+  "reservationDetails": "Detaily rezervace",
+  "checkInNow": "Provést Check-in",
+  "enterReservationNumber": "Prosím, zadejte číslo rezervace.",
+  "reservationNotFound": "Rezervace nenalezena.",
+  "reservationCancelled": "Tato rezervace byla zrušena.",
+  "checkinAlreadyCompleted": "Check-in pro tuto rezervaci již byl proveden.",
+  "CheckinForm": {
+    "formTitle": "Formulář pro Check-in",
+    "completingForReservation": "Dokončujete check-in pro rezervaci č. {reservationId}",
+    "step": {
+      "reservation": "Rezervace",
+      "guestData": "Údaje hostů",
+      "review": "Kontrola"
+    },
+    "reservationSummary": "Shrnutí rezervace",
+    "guestCount": "Počet hostů",
+    "guestCountHint": "Přidejte všechny hosty, kteří budou ubytováni. Každý host musí vyplnit své osobní údaje.",
+    "guestLabel": "Host {number}",
+    "primaryGuest": "hlavní",
+    "addGuest": "Přidat hosta",
+    "removeGuest": "Odebrat",
+    "reviewTitle": "Zkontrolujte zadané údaje",
+    "reviewDescription": "Prosím zkontrolujte níže uvedené údaje před odesláním.",
+    "dataCollectionNotice": {
+      "title": "Informace o zpracování osobních údajů",
+      "text": "Pro účely vašeho ubytování a v souladu s platnou legislativou České republiky (zejména zákon č. 565/1990 Sb., o místních poplatcích, a zákon č. 326/1999 Sb., o pobytu cizinců na území ČR) jsme povinni shromažďovat a uchovávat následující osobní údaje. Tyto údaje budou použity výhradně pro splnění zákonných povinností a pro interní potřeby ubytovatele související s vaším pobytem.",
+      "legalBasis": "Zpracování je nezbytné pro splnění právní povinnosti, která se na správce vztahuje."
+    },
+    "section": {
+      "personalInfo": "Osobní údaje",
+      "identityDocument": "Doklad totožnosti",
+      "address": "Adresa trvalého pobytu",
+      "stayDetails": "Podrobnosti o pobytu"
+    },
+    "field": {
+      "bookNumber": "Číslo rezervace",
+      "guestName": "Jméno hosta",
+      "checkIn": "Příjezd",
+      "checkOut": "Odjezd",
+      "guests": "Hosté",
+      "firstName": {
+        "label": "Jméno"
+      },
+      "lastName": {
+        "label": "Příjmení"
+      },
+      "birthDate": {
+        "label": "Datum narození"
+      },
+      "nationality": {
+        "label": "Státní občanství"
+      },
+      "gender": {
+        "label": "Pohlaví",
+        "select": "Vyberte pohlaví",
+        "male": "Muž",
+        "female": "Žena",
+        "other": "Jiné",
+        "explanation": "Údaj o pohlaví je vyžadován pro statistické účely a pro splnění zákonných povinností."
+      },
+      "documentType": {
+        "label": "Typ dokladu totožnosti",
+        "select": "Vyberte typ dokladu",
+        "op": "Občanský průkaz",
+        "pas": "Cestovní pas",
+        "jine": "Jiný doklad"
+      },
+      "documentNumber": {
+        "label": "Číslo dokladu totožnosti"
+      },
+      "addressStreet": {
+        "label": "Ulice a číslo popisné"
+      },
+      "addressCity": {
+        "label": "Město/Obec"
+      },
+      "addressZip": {
+        "label": "PSČ"
+      },
+      "addressCountry": {
+        "label": "Stát"
+      },
+      "stayPurpose": {
+        "label": "Účel pobytu",
+        "select": "Vyberte účel pobytu",
+        "rekreace": "Rekreace",
+        "sluzebni": "Služební cesta",
+        "jine": "Jiný"
+      },
+      "phone": {
+        "label": "Telefonní číslo (nepovinné)"
+      },
+      "email": {
+        "label": "E-mailová adresa (nepovinné)"
+      },
+      "specialRequests": {
+        "label": "Zvláštní požadavky (nepovinné)"
+      },
+      "consent": {
+        "label": "Souhlas se zpracováním osobních údajů",
+        "text": "Prohlašuji, že veškeré mnou uvedené údaje jsou pravdivé a souhlasím s jejich zpracováním pro účely ubytování."
+      }
+    },
+    "button": {
+      "submit": "Odeslat check-in",
+      "submitting": "Odesílám...",
+      "cancel": "Zrušit",
+      "continue": "Pokračovat",
+      "back": "Zpět"
+    },
+    "success": {
+      "title": "Check-in úspěšně dokončen",
+      "message": "Děkujeme za dokončení online check-inu pro rezervaci č. {reservationId}. Přejeme Vám příjemný pobyt!"
+    },
+    "error": {
+      "alreadyCheckedIn": "Pro tuto rezervaci již byl check-in proveden.",
+      "reservationCancelled": "Tato rezervace byla zrušena a nelze provést check-in.",
+      "reservationNotEligible": "Tato rezervace není způsobilá pro online check-in.",
+      "reservationNotFound": "Rezervace s tímto číslem nebyla nalezena.",
+      "submissionFailed": "Odeslání formuláře se nezdařilo. Zkuste to prosím znovu.",
+      "unknownError": "Došlo k neočekávané chybě."
+    },
+    "validation": {
+      "required": "Toto pole je povinné.",
+      "dateFormat": "Zadejte prosím datum ve formátu RRRR-MM-DD.",
+      "invalidEmail": "Zadejte prosím platnou e-mailovou adresu.",
+      "consentRequired": "Pro pokračování je nutný váš souhlas.",
+      "atLeastOneGuest": "Je vyžadován alespoň jeden host."
+    },
+    "loading": "Načítání údajů o rezervaci..."
+  },
+  "guestInfo": "Informace o hostovi",
+  "reservation": "Rezervace",
+  "close": "Zavřít",
+  "basicInfo": "Základní informace",
+  "fullName": "Celé jméno",
+  "nationality": "Státní občanství",
+  "documents": "Doklady",
+  "documentType": "Typ dokladu",
+  "documentNumber": "Číslo dokladu",
+  "address": "Adresa",
+  "stayInfo": "Pobyt",
+  "stayPurpose": "Účel pobytu",
+  "contact": "Kontakt",
+  "phone": "Telefon",
+  "email": "E-mail",
+  "other": "Ostatní",
+  "consent": "Souhlas",
+  "yes": "Ano",
+  "no": "Ne",
+  "registeredAt": "Registrováno",
+  "noReservations": "Žádné rezervace",
+  "checkout": "Check-out",
+  "checkoutConfirm": "Potvrzení check-outu",
+  "checkoutConfirmMessage": "Opravdu chcete provést check-out pro rezervaci č. {bookNumber}?",
+  "name": "Název",
+  "view": "Zobrazit",
+  "edit": "Upravit",
+  "delete": "Smazat",
+  "save": "Uložit",
+  "cancel": "Zrušit",
+  "addProperty": "Přidat jednotku",
+  "confirmDelete": "Potvrzení smazání",
+  "deleteConfirmMessage": "Opravdu chcete smazat jednotku {name}? Tato akce je nevratná.",
+  "noProperties": "Žádné jednotky",
+  "addReservation": "Přidat rezervaci",
+  "editReservation": "Upravit rezervaci",
+  "guestName": "Jméno hosta",
+  "accommodationUnit": "Ubytovací jednotka",
+  "selectProperty": "Vyberte jednotku",
+  "pending": "Čeká",
+  "confirmed": "Potvrzená",
+  "checkedIn": "Ubytován",
+  "checkedOut": "Odhlášen",
+  "cancelled": "Zrušená",
+  "adults": "Dospělí",
+  "children": "Děti",
+  "remarks": "Poznámky",
+  "specialRequests": "Speciální požadavky",
+  "reservationDetail": "Detail rezervace",
+  "deleteReservationConfirmMessage": "Opravdu chcete smazat rezervaci pro {guest} (příjezd {checkIn})? Tato akce je nevratná.",
+  "auth": {
+    "loginTitle": "Přihlášení",
+    "loginSubtitle": "Zadejte e-mail a heslo",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "vas@email.cz",
+    "passwordLabel": "Heslo",
+    "passwordPlaceholder": "Zadejte heslo",
+    "loginButton": "Přihlásit se",
+    "loggingIn": "Přihlašování…",
+    "logout": "Odhlásit se",
+    "error": "Nesprávný e-mail nebo heslo.",
+    "noAccount": "Nemáte účet?",
+    "registerLink": "Zaregistrovat se",
+    "registerTitle": "Registrace",
+    "registerSubtitle": "Vytvořte si účet pro správu ubytování",
+    "confirmPasswordLabel": "Potvrzení hesla",
+    "confirmPasswordPlaceholder": "Zadejte heslo znovu",
+    "registerButton": "Vytvořit účet",
+    "registering": "Vytváření účtu…",
+    "registerSuccess": "Účet vytvořen",
+    "registerSuccessDescription": "Nyní se můžete přihlásit.",
+    "goToLogin": "Přejít na přihlášení",
+    "hasAccount": "Již máte účet?",
+    "loginLink": "Přihlásit se",
+    "registerError": "Registrace se nezdařila. Zkuste to prosím znovu.",
+    "passwordMismatch": "Hesla se neshodují.",
+    "passwordTooShort": "Heslo musí mít alespoň 6 znaků."
+  }
 }

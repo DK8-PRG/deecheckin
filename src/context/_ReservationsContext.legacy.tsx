@@ -4,29 +4,23 @@ import React, {
   useContext,
   useEffect,
   useState,
+  useMemo,
+  useCallback,
   ReactNode,
 } from "react";
-import { supabase } from "@/lib/supabaseClient";
-
-export interface Reservation {
-  id: string;
-  propertyId: string;
-  guestName: string;
-  startDate: string;
-  endDate: string;
-  // další pole dle potřeby
-}
+import { getReservations, createReservation, ReservationData } from "@/lib/db";
+import type { Reservation } from "../../types/BookingRowProps";
 
 interface ReservationsContextType {
   reservations: Reservation[];
   loading: boolean;
   error: string | null;
-  addReservation: (data: Omit<Reservation, "id">) => Promise<void>;
+  addReservation: (data: ReservationData) => Promise<void>;
   refresh: () => Promise<void>;
 }
 
 const ReservationsContext = createContext<ReservationsContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const ReservationsProvider = ({ children }: { children: ReactNode }) => {
@@ -34,50 +28,52 @@ export const ReservationsProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchReservations = async () => {
+  const fetchReservations = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const { data, error } = await supabase.from("reservations").select();
-      if (error) throw error;
+      const data = await getReservations();
       setReservations(data || []);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Chyba při načítání rezervací");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchReservations();
-  }, []);
+  }, [fetchReservations]);
 
-  const addReservation = async (data: Omit<Reservation, "id">) => {
+  const addReservation = useCallback(async (data: ReservationData) => {
     setLoading(true);
     setError(null);
     try {
-      const { error } = await supabase.from("reservations").insert([data]);
-      if (error) throw error;
-      await fetchReservations();
+      await createReservation(data);
+      const freshData = await getReservations();
+      setReservations(freshData || []);
     } catch (e) {
       setError(
-        e instanceof Error ? e.message : "Chyba při přidávání rezervace"
+        e instanceof Error ? e.message : "Chyba při přidávání rezervace",
       );
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const contextValue = useMemo(
+    () => ({
+      reservations,
+      loading,
+      error,
+      addReservation,
+      refresh: fetchReservations,
+    }),
+    [reservations, loading, error, addReservation, fetchReservations],
+  );
 
   return (
-    <ReservationsContext.Provider
-      value={{
-        reservations,
-        loading,
-        error,
-        addReservation,
-        refresh: fetchReservations,
-      }}
-    >
+    <ReservationsContext.Provider value={contextValue}>
       {children}
     </ReservationsContext.Provider>
   );
@@ -87,7 +83,7 @@ export const useReservationsContext = () => {
   const ctx = useContext(ReservationsContext);
   if (!ctx)
     throw new Error(
-      "useReservationsContext must be used within ReservationsProvider"
+      "useReservationsContext must be used within ReservationsProvider",
     );
   return ctx;
 };

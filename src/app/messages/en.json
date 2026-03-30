@@ -10,5 +10,235 @@
   "dashboard": "Dashboard",
   "getStarted": "Get started by editing",
   "saveAndSee": "Save and see your changes instantly.",
-  "welcome": "Welcome"
+  "welcome": "Welcome",
+  "guest": "Guest",
+  "checkIn": "Check-In",
+  "checkOut": "Check-Out",
+  "propertyId": "Property ID",
+  "bookNumber": "Booking Number",
+  "bookedBy": "Booked By",
+  "bookedOn": "Booked On",
+  "price": "Price",
+  "people": "People",
+  "paymentStatus": "Payment Status",
+  "durationNights": "Duration (Nights)",
+  "rooms": "Rooms",
+  "source": "Source",
+  "status": "Status",
+  "actions": "Actions",
+  "valueNotSet": "Value not set",
+  "checkinTitle": "Online Check-in",
+  "reservationNumberLabel": "Reservation Number",
+  "reservationNumberPlaceholder": "Enter your reservation number",
+  "search": "Search",
+  "searching": "Searching...",
+  "reservationDetails": "Reservation Details",
+  "checkInNow": "Check In Now",
+  "enterReservationNumber": "Please enter a reservation number.",
+  "reservationNotFound": "Reservation not found.",
+  "reservationCancelled": "This reservation has been cancelled.",
+  "checkinAlreadyCompleted": "Check-in for this reservation has already been completed.",
+  "CheckinForm": {
+    "formTitle": "Check-in Form",
+    "completingForReservation": "You are completing check-in for reservation #{reservationId}",
+    "step": {
+      "reservation": "Reservation",
+      "guestData": "Guest Data",
+      "review": "Review"
+    },
+    "reservationSummary": "Reservation Summary",
+    "guestCount": "Number of Guests",
+    "guestCountHint": "Add all guests who will be staying. Each guest must provide their personal details.",
+    "guestLabel": "Guest {number}",
+    "primaryGuest": "primary",
+    "addGuest": "Add Guest",
+    "removeGuest": "Remove",
+    "reviewTitle": "Review Your Information",
+    "reviewDescription": "Please review the information below before submitting.",
+    "dataCollectionNotice": {
+      "title": "Information on Processing of Personal Data",
+      "text": "For the purposes of your accommodation and in accordance with the applicable legislation of the Czech Republic (in particular Act No. 565/1990 Coll., on local fees, and Act No. 326/1999 Coll., on the residence of foreign nationals in the Czech Republic), we are obliged to collect and store the following personal data. This data will be used exclusively to fulfill legal obligations and for the internal needs of the accommodation provider related to your stay.",
+      "legalBasis": "Processing is necessary for compliance with a legal obligation to which the controller is subject."
+    },
+    "section": {
+      "personalInfo": "Personal Information",
+      "identityDocument": "Identity Document",
+      "address": "Permanent Address",
+      "stayDetails": "Stay Details"
+    },
+    "field": {
+      "bookNumber": "Reservation Number",
+      "guestName": "Guest Name",
+      "checkIn": "Check-In",
+      "checkOut": "Check-Out",
+      "guests": "Guests",
+      "firstName": {
+        "label": "First Name"
+      },
+      "lastName": {
+        "label": "Last Name"
+      },
+      "birthDate": {
+        "label": "Date of Birth"
+      },
+      "nationality": {
+        "label": "Nationality"
+      },
+      "gender": {
+        "label": "Gender",
+        "select": "Select gender",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "explanation": "Gender information is required for statistical purposes and to comply with legal obligations."
+      },
+      "documentType": {
+        "label": "Type of Identity Document",
+        "select": "Select document type",
+        "op": "National ID Card",
+        "pas": "Passport",
+        "jine": "Other Document"
+      },
+      "documentNumber": {
+        "label": "Identity Document Number"
+      },
+      "addressStreet": {
+        "label": "Street and Number"
+      },
+      "addressCity": {
+        "label": "City/Town"
+      },
+      "addressZip": {
+        "label": "Postal Code"
+      },
+      "addressCountry": {
+        "label": "Country"
+      },
+      "stayPurpose": {
+        "label": "Purpose of Stay",
+        "select": "Select purpose of stay",
+        "rekreace": "Recreation",
+        "sluzebni": "Business Trip",
+        "jine": "Other"
+      },
+      "phone": {
+        "label": "Phone Number (optional)"
+      },
+      "email": {
+        "label": "Email Address (optional)"
+      },
+      "specialRequests": {
+        "label": "Special Requests (optional)"
+      },
+      "consent": {
+        "label": "Consent to Personal Data Processing",
+        "text": "I declare that all information I have provided is true and I consent to its processing for accommodation purposes."
+      }
+    },
+    "button": {
+      "submit": "Submit Check-in",
+      "submitting": "Submitting...",
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "back": "Back"
+    },
+    "success": {
+      "title": "Check-in Successfully Completed",
+      "message": "Thank you for completing the online check-in for reservation #{reservationId}. We wish you a pleasant stay!"
+    },
+    "error": {
+      "alreadyCheckedIn": "Check-in for this reservation has already been completed.",
+      "reservationCancelled": "This reservation has been cancelled and check-in cannot be performed.",
+      "reservationNotEligible": "This reservation is not eligible for online check-in.",
+      "reservationNotFound": "Reservation with this number was not found.",
+      "submissionFailed": "Form submission failed. Please try again.",
+      "unknownError": "An unexpected error occurred."
+    },
+    "validation": {
+      "required": "This field is required.",
+      "dateFormat": "Please enter a date in YYYY-MM-DD format.",
+      "invalidEmail": "Please enter a valid email address.",
+      "consentRequired": "Your consent is required to proceed.",
+      "atLeastOneGuest": "At least one guest is required."
+    },
+    "loading": "Loading reservation details..."
+  },
+  "guestInfo": "Guest Information",
+  "reservation": "Reservation",
+  "close": "Close",
+  "basicInfo": "Basic Information",
+  "fullName": "Full Name",
+  "nationality": "Nationality",
+  "documents": "Documents",
+  "documentType": "Document Type",
+  "documentNumber": "Document Number",
+  "address": "Address",
+  "stayInfo": "Stay",
+  "stayPurpose": "Purpose of Stay",
+  "contact": "Contact",
+  "phone": "Phone",
+  "email": "Email",
+  "other": "Other",
+  "consent": "Consent",
+  "yes": "Yes",
+  "no": "No",
+  "registeredAt": "Registered At",
+  "noReservations": "No reservations",
+  "checkout": "Check-out",
+  "checkoutConfirm": "Confirm Check-out",
+  "checkoutConfirmMessage": "Are you sure you want to check out reservation #{bookNumber}?",
+  "name": "Name",
+  "view": "View",
+  "edit": "Edit",
+  "delete": "Delete",
+  "save": "Save",
+  "cancel": "Cancel",
+  "addProperty": "Add Property",
+  "confirmDelete": "Confirm Deletion",
+  "deleteConfirmMessage": "Are you sure you want to delete the property {name}? This action cannot be undone.",
+  "noProperties": "No properties",
+  "addReservation": "Add reservation",
+  "editReservation": "Edit reservation",
+  "guestName": "Guest name",
+  "accommodationUnit": "Accommodation unit",
+  "selectProperty": "Select a unit",
+  "pending": "Pending",
+  "confirmed": "Confirmed",
+  "checkedIn": "Checked in",
+  "checkedOut": "Checked out",
+  "cancelled": "Cancelled",
+  "adults": "Adults",
+  "children": "Children",
+  "remarks": "Remarks",
+  "specialRequests": "Special requests",
+  "reservationDetail": "Reservation detail",
+  "deleteReservationConfirmMessage": "Are you sure you want to delete the reservation for {guest} (check-in {checkIn})? This action cannot be undone.",
+  "auth": {
+    "loginTitle": "Sign In",
+    "loginSubtitle": "Enter your email and password",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "loginButton": "Sign In",
+    "loggingIn": "Signing in…",
+    "logout": "Sign Out",
+    "error": "Invalid email or password.",
+    "noAccount": "Don't have an account?",
+    "registerLink": "Sign up",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Create an account to manage your properties",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Enter password again",
+    "registerButton": "Create Account",
+    "registering": "Creating account…",
+    "registerSuccess": "Account Created",
+    "registerSuccessDescription": "You can now sign in.",
+    "goToLogin": "Go to Sign In",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Sign in",
+    "registerError": "Registration failed. Please try again.",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 6 characters."
+  }
 }

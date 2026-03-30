@@ -27,7 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "next-intl.config.js"
+    "next-intl.config.js",
+    "src/lib/db.js"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "**/*.legacy.*"]
 }

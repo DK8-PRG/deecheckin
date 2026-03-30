@@ -1,29 +1,33 @@
+import "../globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
-import { PropertiesProvider } from "@/context/PropertiesContext";
-import { ReservationsProvider } from "@/context/ReservationsContext";
+import { use, ReactNode } from "react";
+import { ToastProvider } from "@/components/ui/toast";
+import csMessages from "../messages/cs.json";
+import enMessages from "../messages/en.json";
 
 interface LocaleLayoutProps {
-  children: React.ReactNode;
-  params: { locale: string };
+  children: ReactNode;
+  params: Promise<{ locale: string }>;
 }
 
-export default async function LocaleLayout({
+export default function LocaleLayout({
   children,
   params,
-}: LocaleLayoutProps) {
-  const { locale } = await params;
-  const messages = (await import(`../messages/${locale}.json`)).default;
+}: Readonly<LocaleLayoutProps>) {
+  const { locale } = use(params);
 
-  if (!["cs", "en"].includes(locale)) notFound();
+  if (!["cs", "en"].includes(locale)) {
+    notFound();
+  }
+
+  const messages = locale === "cs" ? csMessages : enMessages;
 
   return (
     <html lang={locale}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <PropertiesProvider>
-            <ReservationsProvider>{children}</ReservationsProvider>
-          </PropertiesProvider>
+          <ToastProvider>{children}</ToastProvider>
         </NextIntlClientProvider>
       </body>
     </html>
