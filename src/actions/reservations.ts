@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import {
   createReservationSchema,
   updateReservationSchema,
-} from "@/validators/reservation.schema";
+} from "@/schemas/reservation.schema";
 import * as reservationsService from "@/services/reservations.service";
 import * as reservationsRepo from "@/repositories/reservations.repository";
 import type { ActionResult, Reservation } from "@/types/reservation";

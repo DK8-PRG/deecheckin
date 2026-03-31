@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { checkinSubmissionSchema } from "@/validators/guest.schema";
+import { checkinSubmissionSchema } from "@/schemas/guest.schema";
 import * as guestsService from "@/services/guests.service";
 import type { ActionResult } from "@/types/reservation";
 import type { Guest } from "@/types/guest";

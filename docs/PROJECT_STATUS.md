@@ -1,4 +1,4 @@
-# DeeCheckIn — Dokumentace projektu & Roadmapa
+# DeeCheckIn — Stav projektu & Roadmapa
 
 > Poslední aktualizace: 30. března 2026
 
@@ -6,278 +6,328 @@
 
 ## 1. Co je DeeCheckIn
 
-Online check-in systém pro malé ubytovatele (OSVČ) s 1–2 byty na Airbnb/Booking.  
+Online check-in systém pro malé ubytovatele (OSVČ) s 1–2 byty na Airbnb/Booking.
 Hosté vyplní zákonně požadované údaje online → ubytovatel má přehled v admin panelu.
 
----
-
-## 2. Tech stack
-
-| Vrstva     | Technologie           | Verze       |
-| ---------- | --------------------- | ----------- |
-| Framework  | Next.js (App Router)  | 15.3.3      |
-| UI         | React + TypeScript    | 19.0 / 5.x  |
-| Styling    | Tailwind CSS          | 4.x         |
-| Backend/DB | Supabase (PostgreSQL) | 2.49.8      |
-| Formuláře  | React Hook Form + Zod | 7.56 / 3.25 |
-| i18n       | next-intl             | 4.1.0       |
-| Auth       | **Zatím žádná**       | —           |
+Cílová skupina: drobní pronajímatelé v ČR (česká legislativa pro hlášení cizinců).
 
 ---
 
-## 3. Architektura
+## 2. Tech stack (aktuální)
+
+| Vrstva      | Technologie                          | Verze  |
+|-------------|--------------------------------------|--------|
+| Framework   | Next.js (App Router, Turbopack)      | 15.3.3 |
+| UI          | React + TypeScript                   | 19 / 5 |
+| Styling     | Tailwind CSS 4 + Radix UI primitiva  | 4.x    |
+| Backend/DB  | Supabase (PostgreSQL + Auth + RLS)   | 2.49.8 |
+| Formuláře   | React Hook Form + Zod               | 7.56 / 3.25 |
+| i18n        | next-intl (cs/en)                    | 4.1.0  |
+| Auth        | Supabase Auth (email+password, SSR)  |        |
+| Toasty      | Sonner                               | 2.0.7  |
+
+---
+
+## 3. Aktuální architektura
 
 ```
-┌──────────────────────────────────────────────────────┐
-│                     Next.js App Router               │
-│  ┌────────────┐  ┌────────────┐  ┌────────────────┐ │
-│  │  [locale]   │  │ middleware  │  │  i18n (cs/en)  │ │
-│  │  /dashboard │  │ (routing)  │  │                │ │
-│  │  /properties│  └────────────┘  └────────────────┘ │
-│  │  /reserv.   │                                     │
-│  │  /checkin   │  ┌──────────────────────────────┐   │
-│  │  /checkin/  │  │       React Context           │   │
-│  │   [id]      │  │  PropertiesCtx + ReservCtx    │   │
-│  └────────────┘  └──────────┬───────────────────┘   │
-│                              │                        │
-│                   ┌──────────▼───────────────────┐   │
-│                   │       lib/db.ts               │   │
-│                   │  getProperties, CRUD, guests  │   │
-│                   └──────────┬───────────────────┘   │
-│                              │                        │
-└──────────────────────────────┼────────────────────────┘
-                               │
-                    ┌──────────▼───────────────┐
-                    │     Supabase (PostgreSQL) │
-                    │  properties / reservations│
-                    │  guests                   │
-                    └──────────────────────────┘
+Page (Server Component)
+  → Server Actions (src/actions/)
+    → Services (src/services/)
+      → Repositories (src/repositories/)
+        → Supabase DB (PostgreSQL + RLS)
 ```
+
+**Klíčová pravidla:**
+- UI nikdy nevolá Supabase přímo
+- Server Actions NEobsahují business logiku — jen validace + delegace
+- Services neznají Supabase — pracují s repozitáři
+- Repositories nic nevalidují
 
 ---
 
-## 4. Aktuální stav funkcionality
+## 4. Stav funkcionality
 
 ### ✅ Hotovo a funkční
 
-| Oblast                 | Stav                | Detaily                                                            |
-| ---------------------- | ------------------- | ------------------------------------------------------------------ |
-| **Správa properties**  | ✅ Plný CRUD        | Vytvoření, editace, smazání, zobrazení detailu — vše přes modály   |
-| **Výpis rezervací**    | ✅ Funkční          | Tabulka s 15+ sloupci, řazení, filtrování, paginace                |
-| **Check-in vyhledání** | ✅ Funkční          | Zadání čísla rezervace → nalezení → přesměrování na formulář       |
-| **Check-in formulář**  | ✅ Funkční          | Validovaný formulář (Zod), sběr osobních dat dle české legislativy |
-| **Check-out**          | ✅ Funkční          | Potvrzovací modál → změna statusu na CHECKED_OUT                   |
-| **Zobrazení hosta**    | ✅ Funkční          | GuestInfoCard v modálu s detaily hosta po check-inu                |
-| **i18n (cs/en)**       | ✅ Plně přeloženo   | Kompletní překlady obou jazyků                                     |
-| **Dark mode**          | ✅ Základní podpora | CSS proměnné + Tailwind `dark:` třídy                              |
-| **Responsivita**       | ⚠️ Částečná         | Tabulky mají overflow-x, sidebar je fixní 256px                    |
+| Oblast                        | Stav             | Detaily |
+|-------------------------------|------------------|---------|
+| **Auth (email+password)**     | ✅ Funkční       | Login, registrace, logout. Supabase Auth SSR s cookies. Middleware chrání private routes. |
+| **RLS politiky**              | ✅ Zapnuté        | Všechny 3 tabulky mají RLS. Users vidí jen vlastní data. Guests má veřejný INSERT pro check-in. |
+| **Správa properties**         | ✅ Plný CRUD     | Vytvoření, editace, smazání přes dialogy. Server Actions + revalidatePath. |
+| **Správa rezervací**          | ✅ Plný CRUD     | Tabulka s 15+ sloupci, řazení, filtrování. Vytvoření/editace/smazání přes dialogy. |
+| **Check-in vyhledání**        | ✅ Funkční       | Host zadá číslo rezervace → nalezení → přesměrování na wizard. Veřejná stránka. |
+| **Check-in wizard**           | ✅ Funkční       | 3-krokový wizard (info, guest data, review). React Hook Form + Zod. Max 10 hostů. |
+| **Check-out**                 | ✅ Funkční       | Potvrzovací dialog → změna statusu na CHECKED_OUT. |
+| **Zobrazení hosta**           | ✅ Funkční       | GuestInfoCard s detaily hosta po check-inu. |
+| **Dashboard**                 | ✅ Základní      | Stats karty: celkový počet properties, reservations, checked-in, guests. Server Component. |
+| **i18n (cs/en)**              | ✅ Plně přeloženo | Kompletní překlady obou jazyků. LanguageSwitcher v sidebaru. |
+| **Navigace**                  | ✅ Funkční       | AdminSidebar s links: Dashboard, Properties, Reservations, Check-in. Logout. |
+| **Validace**                  | ✅ Client+Server | Zod schémata sdílená mezi formuláři a Server Actions. |
 
-### ⚠️ Chybí / Nedokončeno
+### ⚠️ Částečně hotovo
 
-| Oblast                   | Priorita    | Popis                                                      |
-| ------------------------ | ----------- | ---------------------------------------------------------- |
-| **Autentizace**          | 🔴 Kritická | Admin panel volně přístupný, žádný login                   |
-| **RLS politiky**         | 🔴 Kritická | Supabase tabulky bez Row Level Security                    |
-| **Dashboard statistiky** | 🟡 Střední  | Pouze výpis properties, žádné grafy/KPI                    |
-| **Import rezervací**     | 🟡 Střední  | `importReservations.ts` prázdný                            |
-| **Upload dokladů**       | 🟡 Střední  | `document_photo_url` pole existuje, upload neimplementován |
-| **Error boundaries**     | 🟡 Střední  | Žádné — app padne na neočekávaná data                      |
-| **Mobilní navigace**     | 🟡 Střední  | Sidebar se neschová na mobilu                              |
-| **Loading skeletony**    | 🟢 Nízká    | Pouze text "Načítání..."                                   |
-| **Fakturace**            | 🟢 Nízká    | `wants_invoice` pole existuje, logika ne                   |
-| **Notifikace/toasty**    | 🟢 Nízká    | Žádný feedback po akcích (save, delete)                    |
-| **SEO & metadata**       | 🟢 Nízká    | Chybí meta tagy, OG image                                  |
+| Oblast                   | Stav          | Detaily |
+|--------------------------|---------------|---------|
+| **Mobilní responsivita** | ⚠️ Částečná   | Tabulky mají overflow-x, sidebar je fixní 256px. Chybí hamburger menu. |
+| **Error handling**       | ⚠️ Základní   | Server Actions vrací ActionResult s error messages. Chybí error boundaries (error.tsx). |
+| **Loading states**       | ⚠️ Základní   | Jen text "Načítání…". Zlepšit na loading.tsx skeleton. |
+
+### ❌ Chybí / Neimplementováno
+
+| Oblast                     | Priorita    | Popis |
+|----------------------------|-------------|-------|
+| **Import rezervací**       | 🟡 Střední  | CSV/JSON import z Booking.com/Airbnb. Script existuje ale je prázdný. |
+| **Upload dokladů**         | 🟡 Střední  | `document_photo_url` pole v DB existuje, Supabase Storage neimplementován. |
+| **E-mail notifikace**      | 🟡 Střední  | Automatický mail hostům s check-in odkazem. |
+| **Kalendářový pohled**     | 🟡 Střední  | Vizuální přehled obsazenosti properties. |
+| **PDF export (Kniha hostů)** | 🟡 Střední | Export dat hostů pro úřady dle české legislativy. |
+| **QR kód pro check-in**   | 🟢 Nízká    | Generování QR s odkazem na check-in stránku. |
+| **SEO metadata**           | 🟢 Nízká    | Meta tagy, OG images, favicon. |
+| **Testy**                  | 🟢 Nízká    | Žádné unit/e2e testy. |
+| **CI/CD**                  | 🟢 Nízká    | Žádný automatický deploy. |
 
 ---
 
 ## 5. Databázové schéma
 
-### Aktuální tabulky v Supabase:
+Vzdálený Supabase: `https://vsuvatnkoxgiqtiaqwae.supabase.co`
 
+### properties (5 sloupců)
 ```
-properties
-├─ id (UUID, PK)
-├─ name (TEXT)
-├─ address (TEXT)
-└─ created_at (TIMESTAMPTZ)
-
-reservations
-├─ id (UUID, PK)
-├─ property_id (UUID → properties)
-├─ book_number, guest_names, check_in, check_out
-├─ booked_by, booked_on, status, reservation_status
-├─ rooms, people, adults, children, children_ages
-├─ price, commission_percent, commission_amount
-├─ payment_status, payment_method, payment_type
-├─ remarks, source, device, booker_country, travel_purpose
-├─ guest_id, pin_code, phone_number
-└─ created_at (TIMESTAMPTZ)
-
-guests
-├─ id (UUID, PK)
-├─ reservation_id (UUID → reservations)
-├─ full_name, birth_date, nationality
-├─ document_type, document_number
-├─ address_street, address_city, address_zip, address_country
-├─ stay_purpose, phone, email, consent
-├─ document_photo_url
-├─ company_name, company_vat, company_address, wants_invoice
-└─ created_at (TIMESTAMPTZ)
+id          UUID PK (gen_random_uuid)
+name        text NOT NULL
+address     text
+user_id     uuid FK → auth.users
+created_at  timestamptz (now())
 ```
+
+### reservations (42 sloupců)
+```
+id                  UUID PK
+property_id         uuid FK → properties
+book_number         serial (auto-increment)
+booked_by           text
+guest_names         text
+check_in            date
+check_out           date
+booked_on           date
+status              text DEFAULT 'pending'
+reservation_status  text
+rooms, people, num_guests, adults, children  integer
+children_ages       text
+price               text
+commission_percent  numeric
+commission_amount   text
+payment_status, payment_method, payment_type  text
+remarks, special_requests  text
+booker_group, booker_country, travel_purpose  text
+device, source      text
+early_checkin, late_checkout, pet  boolean
+early_checkin_time, late_checkout_time  text
+pin_code, phone_number, address  text
+cancellation_date, last_status_update  text
+guest_id            integer
+user_id             uuid FK → auth.users
+created_at          timestamptz
+```
+
+### guests (20 sloupců)
+```
+id                  UUID PK
+reservation_id      uuid FK → reservations
+guest_index         integer DEFAULT 0
+first_name          text NOT NULL
+last_name           text NOT NULL
+birth_date          date NOT NULL
+nationality         text NOT NULL
+document_type       text NOT NULL ('OP', 'PAS', 'OTHER')
+document_number     text NOT NULL
+address_street      text NOT NULL
+address_city        text NOT NULL
+address_zip         text NOT NULL
+address_country     text NOT NULL
+stay_purpose        text NOT NULL
+phone               text
+email               text
+consent             boolean NOT NULL (GDPR)
+document_photo_url  text
+user_id             uuid FK → auth.users
+created_at          timestamptz
+```
+
+### Indexy
+```
+idx_properties_user_id
+idx_reservations_user_id
+idx_reservations_book_number
+idx_reservations_property_id
+idx_guests_user_id
+idx_guests_reservation_id
+```
+
+### RLS politiky
+- **properties**: SELECT/INSERT/UPDATE/DELETE jen pro `auth.uid() = user_id`
+- **reservations**: SELECT/INSERT/UPDATE/DELETE jen pro `auth.uid() = user_id`
+- **guests**: SELECT/UPDATE/DELETE pro `auth.uid() = user_id` + **PUBLIC INSERT** (check-in bez přihlášení)
 
 ---
 
-## 6. Souborová struktura
+## 6. Souborová struktura (aktuální)
 
 ```
 src/
 ├── app/
-│   ├── globals.css                    # Tailwind + CSS proměnné
-│   ├── messages/cs.json               # České překlady (~170 klíčů)
-│   ├── messages/en.json               # Anglické překlady
-│   └── [locale]/
-│       ├── layout.tsx                 # Root layout + Context Providers
-│       ├── page.tsx                   # Úvodní stránka
-│       ├── dashboard/page.tsx         # Dashboard
-│       ├── properties/page.tsx        # Správa properties (CRUD modály)
-│       ├── reservations/page.tsx      # Správa rezervací + checkout
-│       ├── checkin/page.tsx           # Vyhledání rezervace
-│       └── checkin/[reservationId]/page.tsx  # Check-in formulář
-├── components/
-│   ├── AdminSidebar.tsx               # Navigace + branding
-│   ├── LanguageSwitcher.tsx           # Přepínač cs/en
-│   ├── ReservationsTable.tsx          # Wrapper pro DataTable
-│   ├── PropertiesTable.tsx            # Wrapper pro DataTable
-│   ├── DatabaseDebugger.tsx           # Debug utility
-│   └── ui/
-│       ├── DataTable.tsx              # Generická tabulka (sort/filter/page)
-│       ├── Modal.tsx                  # Znovupoužitelný modál
-│       └── GuestInfoCard.tsx          # Karta hosta
-├── context/
-│   ├── PropertiesContext.tsx           # CRUD + stav properties
-│   └── ReservationsContext.tsx         # CRUD + stav rezervací
-├── i18n/
-│   ├── routing.ts                     # Locale konfigurace
-│   ├── navigation.ts                  # i18n Link, useRouter
-│   └── request.ts                     # Server-side i18n
+│   ├── globals.css
+│   ├── [locale]/
+│   │   ├── layout.tsx              # Root layout + providers (Toaster)
+│   │   ├── page.tsx                # Landing → DashboardShell wrapper
+│   │   ├── login/page.tsx          # Email+password login form
+│   │   ├── register/page.tsx       # Registration form
+│   │   ├── dashboard/page.tsx      # Stats cards (Server Component)
+│   │   ├── properties/page.tsx     # Properties CRUD (Server → Client)
+│   │   ├── reservations/page.tsx   # Reservations CRUD (Server → Client)
+│   │   ├── checkin/page.tsx        # Public search by book_number
+│   │   └── checkin/[reservationId]/page.tsx  # Check-in wizard (3 steps)
+│   └── messages/
+│       ├── cs.json                 # ~170 klíčů
+│       └── en.json
+├── actions/
+│   ├── auth.ts                     # signIn, signUp, signOut
+│   ├── checkin.ts                  # checkinAction (validates + creates guests)
+│   ├── guests.ts                   # getGuestsByBookNumberAction
+│   ├── properties.ts               # create/update/deletePropertyAction
+│   └── reservations.ts             # find/create/update/deleteReservationAction
+├── services/
+│   ├── properties.service.ts       # list, getById, create, update, remove
+│   ├── reservations.service.ts     # list, getById, create, update, remove
+│   └── guests.service.ts           # performCheckin, getGuestsByReservation
+├── repositories/
+│   ├── properties.repository.ts    # findAll, findById, create, update, remove
+│   ├── reservations.repository.ts  # findAll, findById, create, update, remove, findByBookNumber, updateStatusByBookNumber
+│   └── guests.repository.ts        # findByReservationId, createMany
 ├── lib/
-│   ├── supabaseClient.ts             # Supabase init
-│   └── db.ts                          # Všechny DB operace
-└── middleware.ts                       # i18n routing middleware
-
-types/
-└── BookingRowProps.ts                 # Centralizované typy (Property, Reservation, Guest)
+│   ├── supabase/
+│   │   ├── client.ts               # createClient() — browser
+│   │   ├── server.ts               # createServerClient(), getUser(), requireUser()
+│   │   └── middleware.ts            # updateSession() — refreshes auth cookies
+│   └── utils.ts                    # cn() helper
+├── components/
+│   ├── ui/                          # badge, button, dialog, input, label, select, skeleton, stats-card, toast
+│   ├── checkin/
+│   │   ├── CheckinWizard.tsx        # 3-step form, field array, max 10 guests
+│   │   └── StepIndicator.tsx        # Visual progress indicator
+│   ├── properties/
+│   │   └── PropertiesPageClient.tsx # Client wrapper for CRUD dialogs
+│   ├── reservations/
+│   │   ├── ReservationsPageClient.tsx # Client wrapper for table + dialogs
+│   │   ├── ReservationForm.tsx       # Create/edit form
+│   │   └── DeleteReservationDialog.tsx
+│   ├── AdminSidebar.tsx             # Navigation + logo + logout + LanguageSwitcher
+│   ├── DashboardShell.tsx           # Layout: sidebar + main content
+│   ├── DashboardHeader.tsx          # Sticky header with title
+│   ├── LanguageSwitcher.tsx         # cs/en toggle
+│   ├── PropertiesTable.tsx          # DataTable wrapper
+│   ├── ReservationsTable.tsx        # DataTable wrapper
+│   ├── DatabaseDebugger.tsx         # Dev debug utility
+│   └── ui/
+│       ├── DataTable.tsx            # Generic sortable/filterable table
+│       ├── GuestInfoCard.tsx        # Guest details card
+│       └── Modal.tsx                # Reusable modal wrapper
+├── types/
+│   ├── property.ts                  # Property, PropertyInsert, PropertyUpdate
+│   ├── reservation.ts               # Reservation, ReservationInsert, ReservationUpdate, ActionResult<T>
+│   └── guest.ts                     # Guest, GuestInsert, CheckinSubmission
+├── validators/
+│   ├── property.schema.ts           # createPropertySchema, updatePropertySchema
+│   ├── reservation.schema.ts        # createReservationSchema, updateReservationSchema
+│   └── guest.schema.ts              # guestSchema, checkinFormSchema, checkinSubmissionSchema
+├── context/
+│   ├── _PropertiesContext.legacy.tsx  # DEPRECATED (excluded from tsconfig)
+│   └── _ReservationsContext.legacy.tsx # DEPRECATED (excluded from tsconfig)
+├── i18n/
+│   ├── routing.ts                   # locales: ["cs","en"], defaultLocale: "cs"
+│   ├── request.ts                   # getRequestConfig → loads messages
+│   └── navigation.ts               # Link, redirect, usePathname, useRouter
+└── middleware.ts                    # Auth guard + next-intl routing + cookie merge
 ```
 
 ---
 
-## 7. Roadmapa — Co zbývá pro produkční aplikaci
-
-### Fáze 1: Bezpečnost & Stabilita (Priorita: KRITICKÁ)
-
-- [ ] **Supabase Auth** — přihlášení pro admina (email/magic link)
-- [ ] **Chráněné routes** — middleware kontrola session pro /dashboard, /properties, /reservations
-- [ ] **RLS politiky** — Row Level Security na všech tabulkách
-- [ ] **Error boundaries** — `error.tsx` + `not-found.tsx` pro každou route
-- [ ] **API routes** — přesun citlivých DB operací z klienta na server (Route Handlers / Server Actions)
-- [ ] **Rate limiting** — ochrana check-in formuláře
-
-### Fáze 2: UX & Design (Priorita: VYSOKÁ)
-
-- [ ] **Design systém** — konzistentní barvy, typografie, spacing
-- [ ] **Mobilní sidebar** — hamburger menu, overlay navigace
-- [ ] **Loading skeletony** — Skeleton komponenty místo textu "Načítání..."
-- [ ] **Toast notifikace** — potvrzení akcí (uloženo, smazáno, chyba)
-- [ ] **Dashboard KPI** — počet rezervací dnes/tento týden, obsazenost, check-in status graf
-- [ ] **Animace** — přechody stránek, modály s framer-motion
-- [ ] **Vstupní formuláře** — lepší inputy s ikonami, floating labels, autocomplete zemí
-- [ ] **Empty states** — ilustrace pro prázdné tabulky
-- [ ] **Breadcrumbs** — navigační drobečky
-
-### Fáze 3: Funkce (Priorita: STŘEDNÍ)
-
-- [ ] **Import rezervací** — CSV/JSON import z Booking/Airbnb
-- [ ] **Upload dokladů** — Supabase Storage pro fotky dokladů
-- [ ] **Kalendářový pohled** — vizuální přehled obsazenosti
-- [ ] **E-mail notifikace** — automatický mail hostům s odkazem na check-in
-- [ ] **QR kód** — generování QR pro check-in odkaz
-- [ ] **PDF export** — export dat hostů pro úřady (Kniha hostů)
-- [ ] **Multi-host check-in** — více hostů na jednu rezervaci
-- [ ] **Fakturace** — generování dokladu pro hosta
-
-### Fáze 4: Polish & Produkce (Priorita: NÍZKÁ)
-
-- [ ] **SEO metadata** — meta tagy, OG images, favicon
-- [ ] **PWA** — progressive web app, offline podpora
-- [ ] **CI/CD** — GitHub Actions, automatický deploy na Vercel
-- [ ] **Testy** — Jest + Playwright (unit + e2e)
-- [ ] **Monitoring** — Sentry pro error tracking
-- [ ] **Analytics** — Plausible/PostHog pro usage tracking
-- [ ] **Dokumentace API** — OpenAPI spec pro budoucí integraci
-- [ ] **Supabase schema migration** — sjednotit SQL soubor s reálným schématem
-
----
-
-## 8. Designový koncept — Na co cílit
-
-### Inspirace
-
-| App                  | Co vzít                                      |
-| -------------------- | -------------------------------------------- |
-| **Cal.com**          | Čistý minimální design, sidebar navigace     |
-| **Linear**           | Rychlost, keyboard shortcuts, smooth animace |
-| **Stripe Dashboard** | Přehledné karty, grafy, tabulky              |
-| **Airbnb Host**      | Kalendář obsazenosti, detaily rezervací      |
-
-### Barevná paleta (návrh)
+## 7. Auth flow
 
 ```
-Primary:    #2563EB (blue-600)   — akce, linky, active state
-Secondary:  #059669 (emerald-600) — check-in, success
-Danger:     #DC2626 (red-600)    — smazat, chyby
-Warning:    #D97706 (amber-600)  — check-out, upozornění
-Surface:    #F8FAFC (slate-50)   — pozadí karet
-Border:     #E2E8F0 (slate-200)  — ohraničení
-Text:       #0F172A (slate-900)  — hlavní text
-Muted:      #64748B (slate-500)  — sekundární text
-```
+Registration:
+  /register → signUp(email, password) → supabase.auth.signUp() → success message → /login
 
-### Typografie
+Login:
+  /login → signIn(email, password) → supabase.auth.signInWithPassword() → cookie session → redirect /dashboard
 
-```
-Headings:   Inter (700) nebo Geist Sans
-Body:       Inter (400)
-Mono:       Geist Mono (pro čísla, kódy)
-```
+Session:
+  middleware.ts → updateSession() → refreshes Supabase auth tokens in cookies → getUser() (server-verified)
 
-### Komponenty k vylepšení
+Protection:
+  Private routes: everything except /login, /register, /auth/callback, /checkin/*
+  No user + private route → redirect to /login?redirectTo=<original_path>
 
-- **Sidebar**: ikony (Lucide React), collapse na mobilu, active state s barvou
-- **Tabulky**: sticky hlavička, row hover, alternující barvy, kompaktnější spacing
-- **Formuláře**: floating labels, inline validace, progress indikátor
-- **Karty**: subtle shadow, border-radius 12px, konzistentní padding
-- **Tlačítka**: 3 velikosti (sm/md/lg), icon support, loading spinner
-
----
-
-## 9. Příkazy
-
-```bash
-npm run dev      # Vývojový server (Turbopack)
-npm run build    # Produkční build
-npm run start    # Produkční server
-npm run lint     # ESLint kontrola
+Logout:
+  AdminSidebar → signOut(locale) → supabase.auth.signOut() → redirect /login
 ```
 
 ---
 
-## 10. Prostředí
+## 8. Stav management
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-```
+- **Server Components** načítají data přímo přes services/repositories
+- **Client Components** dostávají data jako props z Server Components
+- **Mutace** přes Server Actions s `revalidatePath()` pro cache invalidaci
+- **Lokální stav** přes React `useState`, `useTransition`
+- Zustand je v dependencies ale **aktivně se nepoužívá**
+- Legacy React Context soubory (`_*.legacy.tsx`) jsou vyřazené z tsconfig
 
 ---
 
-_Tento dokument aktualizuj při každé větší změně._
+## 9. Infrastruktura & Tooling
+
+| Nástroj | Konfigurace | Poznámka |
+|---------|-------------|----------|
+| **Supabase (remote)** | `https://vsuvatnkoxgiqtiaqwae.supabase.co` | IPv6-only DB, REST API funguje |
+| **Supabase MCP** | `.vscode/mcp.json` | Přímá správa DB z VS Code (SQL, migrace) |
+| **Dev server** | `npm run dev` (Turbopack) | Výchozí port 3000 |
+| **Build** | `npm run build` | Next.js production build |
+| **ESLint** | `eslint.config.mjs` | next lint config |
+| **TypeScript** | `tsconfig.json` | Strict mode, `@/*` alias |
+
+---
+
+## 10. Roadmapa (co dělat dál)
+
+### Fáze 1: Stabilita & UX (Priorita: VYSOKÁ)
+- [ ] Error boundaries — `error.tsx`, `not-found.tsx` pro každou route
+- [ ] Loading states — `loading.tsx` se skeleton komponentami
+- [ ] Mobilní responsivita — hamburger menu, responsive sidebar
+- [ ] Toast notifikace pro všechny akce (create/update/delete)
+- [ ] Empty states — ilustrace pro prázdné tabulky
+
+### Fáze 2: Klíčové funkce (Priorita: STŘEDNÍ)
+- [ ] Import rezervací z Booking.com CSV
+- [ ] Upload dokladů (Supabase Storage)
+- [ ] PDF export Knihy hostů (česká legislativa)
+- [ ] E-mail notifikace hostům s check-in odkazem
+- [ ] QR kód generátor pro check-in URL
+- [ ] Kalendářový pohled obsazenosti
+
+### Fáze 3: Produkce (Priorita: NÍZKÁ)
+- [ ] Testy (Jest unit + Playwright e2e)
+- [ ] CI/CD (GitHub Actions → Vercel)
+- [ ] SEO metadata, OG images
+- [ ] Error monitoring (Sentry)
+- [ ] Analytics (Plausible/PostHog)
+
+---
+
+## 11. Testovací účet
+
+- **Email**: `test@test.cz`
+- **Heslo**: `asdfasdf`
+- Uživatel je registrovaný na vzdáleném Supabase, email potvrzený

@@ -20,7 +20,7 @@ export function Modal({
   children,
   size = "md",
   closeOnOverlayClick = true,
-}: ModalProps) {
+}: Readonly<ModalProps>) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -55,7 +55,15 @@ export function Modal({
       {/* Overlay */}
       <div
         className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+        role="presentation"
         onClick={closeOnOverlayClick ? onClose : undefined}
+        onKeyDown={
+          closeOnOverlayClick
+            ? (e) => {
+                if (e.key === "Enter" || e.key === " ") onClose();
+              }
+            : undefined
+        }
       />
 
       {/* Modal */}

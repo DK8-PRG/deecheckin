@@ -8,7 +8,7 @@ import {
   createReservationSchema,
   type CreateReservationInput,
   type UpdateReservationInput,
-} from "@/validators/reservation.schema";
+} from "@/schemas/reservation.schema";
 import {
   createReservationAction,
   updateReservationAction,
@@ -76,7 +76,7 @@ export function ReservationForm({
     startTransition(async () => {
       const result = isEdit
         ? await updateReservationAction(
-            reservation!.id,
+            reservation.id,
             data as UpdateReservationInput,
           )
         : await createReservationAction(data);

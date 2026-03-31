@@ -32,19 +32,23 @@ export default async function DashboardPage() {
           <StatsCard
             title={t("accommodationUnits")}
             value={properties.length}
-            icon={Building2}
+            icon={<Building2 className="h-4 w-4" />}
           />
           <StatsCard
             title={t("reservations")}
             value={reservations.length}
-            icon={CalendarCheck}
+            icon={<CalendarCheck className="h-4 w-4" />}
           />
           <StatsCard
             title={t("checkin")}
             value={checkedInCount}
-            icon={ClipboardCheck}
+            icon={<ClipboardCheck className="h-4 w-4" />}
           />
-          <StatsCard title={t("people")} value={totalGuests} icon={Users} />
+          <StatsCard
+            title={t("people")}
+            value={totalGuests}
+            icon={<Users className="h-4 w-4" />}
+          />
         </div>
 
         {/* Recent reservations */}

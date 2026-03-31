@@ -9,8 +9,14 @@ import {
   updatePropertyAction,
   deletePropertyAction,
 } from "@/actions/properties";
-import { PropertiesTable } from "@/components/PropertiesTable";
-import { Modal } from "@/components/ui/Modal";
+import { PropertiesTable } from "./PropertiesTable";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
@@ -136,115 +142,128 @@ export function PropertiesPageClient({
         onView={(p) => setViewingProperty(p)}
       />
 
-      {/* Add Modal */}
-      <Modal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title={t("addProperty")}
-        size="md"
-      >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">
-              {t("name")}
-            </label>
-            <input
-              type="text"
-              value={addForm.name}
-              onChange={(e) =>
-                setAddForm((f) => ({ ...f, name: e.target.value }))
-              }
-              className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
-            />
+      {/* Add Dialog */}
+      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("addProperty")}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {t("addProperty")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                {t("name")}
+              </label>
+              <input
+                type="text"
+                value={addForm.name}
+                onChange={(e) =>
+                  setAddForm((f) => ({ ...f, name: e.target.value }))
+                }
+                className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                {t("address")}
+              </label>
+              <input
+                type="text"
+                value={addForm.address}
+                onChange={(e) =>
+                  setAddForm((f) => ({ ...f, address: e.target.value }))
+                }
+                className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={() => setShowAddModal(false)}>
+                {t("cancel")}
+              </Button>
+              <Button
+                onClick={handleAdd}
+                disabled={isPending || !addForm.name.trim()}
+              >
+                {isPending ? "..." : t("save")}
+              </Button>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">
-              {t("address")}
-            </label>
-            <input
-              type="text"
-              value={addForm.address}
-              onChange={(e) =>
-                setAddForm((f) => ({ ...f, address: e.target.value }))
-              }
-              className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
-            />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" onClick={() => setShowAddModal(false)}>
-              {t("cancel")}
-            </Button>
-            <Button
-              onClick={handleAdd}
-              disabled={isPending || !addForm.name.trim()}
-            >
-              {isPending ? "..." : t("save")}
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        </DialogContent>
+      </Dialog>
 
-      {/* Edit Modal */}
-      <Modal
-        isOpen={!!editingProperty}
-        onClose={() => setEditingProperty(null)}
-        title={t("edit")}
-        size="md"
+      {/* Edit Dialog */}
+      <Dialog
+        open={!!editingProperty}
+        onOpenChange={(open) => !open && setEditingProperty(null)}
       >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">
-              {t("name")}
-            </label>
-            <input
-              type="text"
-              value={editForm.name}
-              onChange={(e) =>
-                setEditForm((f) => ({ ...f, name: e.target.value }))
-              }
-              className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
-            />
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("edit")}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {t("edit")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                {t("name")}
+              </label>
+              <input
+                type="text"
+                value={editForm.name}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, name: e.target.value }))
+                }
+                className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                {t("address")}
+              </label>
+              <input
+                type="text"
+                value={editForm.address}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, address: e.target.value }))
+                }
+                className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => setEditingProperty(null)}
+              >
+                {t("cancel")}
+              </Button>
+              <Button
+                onClick={handleSaveEdit}
+                disabled={isPending || !editForm.name.trim()}
+              >
+                {isPending ? "..." : t("save")}
+              </Button>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">
-              {t("address")}
-            </label>
-            <input
-              type="text"
-              value={editForm.address}
-              onChange={(e) =>
-                setEditForm((f) => ({ ...f, address: e.target.value }))
-              }
-              className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
-            />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" onClick={() => setEditingProperty(null)}>
-              {t("cancel")}
-            </Button>
-            <Button
-              onClick={handleSaveEdit}
-              disabled={isPending || !editForm.name.trim()}
-            >
-              {isPending ? "..." : t("save")}
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        </DialogContent>
+      </Dialog>
 
-      {/* Delete Confirmation Modal */}
-      <Modal
-        isOpen={!!deletingProperty}
-        onClose={() => setDeletingProperty(null)}
-        title={t("confirmDelete")}
-        size="sm"
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={!!deletingProperty}
+        onOpenChange={(open) => !open && setDeletingProperty(null)}
       >
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            {t("deleteConfirmMessage", {
-              name: deletingProperty?.name ?? "",
-            })}
-          </p>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("confirmDelete")}</DialogTitle>
+            <DialogDescription>
+              {t("deleteConfirmMessage", {
+                name: deletingProperty?.name ?? "",
+              })}
+            </DialogDescription>
+          </DialogHeader>
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="outline" onClick={() => setDeletingProperty(null)}>
               {t("cancel")}
@@ -257,39 +276,47 @@ export function PropertiesPageClient({
               {isPending ? "..." : t("delete")}
             </Button>
           </div>
-        </div>
-      </Modal>
+        </DialogContent>
+      </Dialog>
 
-      {/* View Modal */}
-      <Modal
-        isOpen={!!viewingProperty}
-        onClose={() => setViewingProperty(null)}
-        title={viewingProperty?.name ?? ""}
-        size="md"
+      {/* View Dialog */}
+      <Dialog
+        open={!!viewingProperty}
+        onOpenChange={(open) => !open && setViewingProperty(null)}
       >
-        <div className="space-y-3">
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm text-muted-foreground">ID:</span>
-            <span className="text-sm font-medium text-foreground">
-              {viewingProperty?.id}
-            </span>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{viewingProperty?.name ?? ""}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {viewingProperty?.name ?? ""}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="flex items-baseline gap-2">
+              <span className="text-sm text-muted-foreground">ID:</span>
+              <span className="text-sm font-medium text-foreground">
+                {viewingProperty?.id}
+              </span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-sm text-muted-foreground">
+                {t("name")}:
+              </span>
+              <span className="text-sm font-medium text-foreground">
+                {viewingProperty?.name}
+              </span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-sm text-muted-foreground">
+                {t("address")}:
+              </span>
+              <span className="text-sm font-medium text-foreground">
+                {viewingProperty?.address || "-"}
+              </span>
+            </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm text-muted-foreground">{t("name")}:</span>
-            <span className="text-sm font-medium text-foreground">
-              {viewingProperty?.name}
-            </span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm text-muted-foreground">
-              {t("address")}:
-            </span>
-            <span className="text-sm font-medium text-foreground">
-              {viewingProperty?.address || "-"}
-            </span>
-          </div>
-        </div>
-      </Modal>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

@@ -9,7 +9,10 @@ interface DashboardHeaderProps {
   children?: React.ReactNode;
 }
 
-export function DashboardHeader({ title, children }: DashboardHeaderProps) {
+export function DashboardHeader({
+  title,
+  children,
+}: Readonly<DashboardHeaderProps>) {
   const t = useTranslations();
 
   return (

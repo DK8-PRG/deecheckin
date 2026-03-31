@@ -2,7 +2,7 @@ import type { Property, PropertyInsert } from "@/types/property";
 import type {
   CreatePropertyInput,
   UpdatePropertyInput,
-} from "@/validators/property.schema";
+} from "@/schemas/property.schema";
 import * as propertiesRepo from "@/repositories/properties.repository";
 
 // ---------------------------------------------------------------------------

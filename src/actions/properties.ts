@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import {
   createPropertySchema,
   updatePropertySchema,
-} from "@/validators/property.schema";
+} from "@/schemas/property.schema";
 import * as propertiesService from "@/services/properties.service";
 import type { ActionResult } from "@/types/reservation";
 import type { Property } from "@/types/property";

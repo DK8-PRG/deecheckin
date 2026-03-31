@@ -1,18 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import * as reservationsRepo from "@/repositories/reservations.repository";
 import { CheckinWizard } from "@/components/checkin/CheckinWizard";
-
-// ---------------------------------------------------------------------------
-// SERVER COMPONENT — fetches reservation on the server by book_number
-// ---------------------------------------------------------------------------
-
-const ELIGIBLE_STATUSES = new Set([
-  "CONFIRMED",
-  "PENDING",
-  "pending_checkin",
-  "confirmed",
-  "pending",
-]);
+import { ELIGIBLE_CHECKIN_STATUSES } from "@/lib/constants";
 
 interface CheckinFormPageProps {
   params: Promise<{ reservationId: string }>;
@@ -20,7 +9,7 @@ interface CheckinFormPageProps {
 
 export default async function CheckinFormPage({
   params,
-}: CheckinFormPageProps) {
+}: Readonly<CheckinFormPageProps>) {
   const { reservationId } = await params;
   const t = await getTranslations("CheckinForm");
 
@@ -58,7 +47,7 @@ export default async function CheckinFormPage({
     );
   }
 
-  if (!ELIGIBLE_STATUSES.has(status ?? "")) {
+  if (!ELIGIBLE_CHECKIN_STATUSES.has(status ?? "")) {
     return (
       <div className="max-w-md mx-auto mt-16 p-6 rounded-lg border border-destructive/30 bg-destructive/5 text-center">
         <p className="text-destructive font-medium">

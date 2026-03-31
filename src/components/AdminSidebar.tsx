@@ -100,7 +100,11 @@ const AdminSidebar = () => {
       {mobileOpen && (
         <div
           className="lg:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+          role="presentation"
           onClick={() => setMobileOpen(false)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") setMobileOpen(false);
+          }}
         />
       )}
 

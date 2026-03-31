@@ -1,19 +1,12 @@
 import type { Guest, GuestInsert } from "@/types/guest";
-import type { CheckinSubmissionData } from "@/validators/guest.schema";
+import type { CheckinSubmissionData } from "@/schemas/guest.schema";
 import * as guestsRepo from "@/repositories/guests.repository";
 import * as reservationsRepo from "@/repositories/reservations.repository";
+import { ELIGIBLE_CHECKIN_STATUSES } from "@/lib/constants";
 
 // ---------------------------------------------------------------------------
 // Guest / Check-in service — business logic
 // ---------------------------------------------------------------------------
-
-const ELIGIBLE_STATUSES = new Set([
-  "CONFIRMED",
-  "PENDING",
-  "pending_checkin",
-  "confirmed",
-  "pending",
-]);
 
 export async function performCheckin(
   input: CheckinSubmissionData,
@@ -28,7 +21,7 @@ export async function performCheckin(
 
   // 2. Check reservation status eligibility
   const status = reservation.reservation_status ?? reservation.status;
-  if (!ELIGIBLE_STATUSES.has(status ?? "")) {
+  if (!ELIGIBLE_CHECKIN_STATUSES.has(status ?? "")) {
     if (status === "CHECKED_IN") {
       throw new Error("Check-in pro tuto rezervaci již byl proveden");
     }

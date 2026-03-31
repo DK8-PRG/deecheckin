@@ -7,7 +7,7 @@ interface DashboardShellProps {
   children: React.ReactNode;
 }
 
-export function DashboardShell({ children }: DashboardShellProps) {
+export function DashboardShell({ children }: Readonly<DashboardShellProps>) {
   return (
     <div className="min-h-screen bg-background">
       <AdminSidebar />

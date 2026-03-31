@@ -41,7 +41,6 @@ interface DataTableProps<T> {
   pageSize?: number;
   sortable?: boolean;
   filterable?: boolean;
-  dragAndDrop?: boolean;
   className?: string;
 }
 
@@ -57,7 +56,7 @@ export function DataTable<T extends object>({
   sortable = true,
   filterable = true,
   className = "",
-}: DataTableProps<T>) {
+}: Readonly<DataTableProps<T>>) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{
     key: string;

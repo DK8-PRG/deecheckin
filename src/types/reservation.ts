@@ -69,17 +69,11 @@ export interface ReservationInsert {
 /** Data shape for updating an existing reservation row. */
 export type ReservationUpdate = Partial<ReservationInsert>;
 
-/** Property type (minimal, for the dropdown). */
+/** Property type (minimal, for dropdowns in reservation forms). */
 export interface PropertyOption {
   id: string;
   name: string;
 }
 
-/** Generic action result wrapper. */
-export type ActionResult<T = void> =
-  | { success: true; data: T }
-  | {
-      success: false;
-      error: string;
-      fieldErrors?: Record<string, string[]>;
-    };
+// Re-export ActionResult from its canonical location for backward compatibility.
+export type { ActionResult } from "@/types/action";

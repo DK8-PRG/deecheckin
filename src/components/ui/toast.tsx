@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 
@@ -24,7 +30,9 @@ export function useToast() {
   return ctx;
 }
 
-export function ToastProvider({ children }: { children: React.ReactNode }) {
+export function ToastProvider({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const removeToast = useCallback((id: string) => {
@@ -37,11 +45,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       setToasts((prev) => [...prev, { ...toast, id }]);
       setTimeout(() => removeToast(id), toast.duration ?? 4000);
     },
-    [removeToast]
+    [removeToast],
   );
 
+  const contextValue = useMemo(() => ({ toast: addToast }), [addToast]);
+
   return (
-    <ToastContext.Provider value={{ toast: addToast }}>
+    <ToastContext.Provider value={contextValue}>
       {children}
       {/* Toast container */}
       <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none">
@@ -50,15 +60,18 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             key={t.id}
             className={cn(
               "pointer-events-auto rounded-lg border bg-card p-4 shadow-lg transition-all animate-in slide-in-from-right-full duration-200",
-              t.variant === "destructive" && "border-destructive/30 bg-destructive/5",
-              t.variant === "success" && "border-success/30 bg-success/5"
+              t.variant === "destructive" &&
+                "border-destructive/30 bg-destructive/5",
+              t.variant === "success" && "border-success/30 bg-success/5",
             )}
           >
             <div className="flex items-start gap-3">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground">{t.title}</p>
                 {t.description && (
-                  <p className="mt-1 text-xs text-muted-foreground">{t.description}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t.description}
+                  </p>
                 )}
               </div>
               <button
