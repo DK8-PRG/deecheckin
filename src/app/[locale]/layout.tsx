@@ -3,8 +3,31 @@ import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
 import { use, ReactNode } from "react";
 import { ToastProvider } from "@/components/ui/toast";
+import type { Metadata, Viewport } from "next";
 import csMessages from "../messages/cs.json";
 import enMessages from "../messages/en.json";
+
+export const metadata: Metadata = {
+  title: {
+    default: "DeeCheckIn",
+    template: "%s | DeeCheckIn",
+  },
+  description:
+    "Online check-in systém pro malé ubytovatele. Hosté vyplní zákonné údaje online.",
+  icons: {
+    icon: "/favicon.svg",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#0f172a",
+};
 
 interface LocaleLayoutProps {
   children: ReactNode;

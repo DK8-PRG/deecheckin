@@ -15,12 +15,17 @@ export function FormField({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={className}>
-      <label className="block text-sm font-medium text-foreground mb-1">
+    <div className={className} data-error={error ? "" : undefined}>
+      <label className="block text-sm font-medium text-foreground mb-1.5">
         {label}
       </label>
       {children}
-      {error && <p className="mt-1 text-xs text-destructive">{t(error)}</p>}
+      {error && (
+        <p className="mt-1.5 text-xs text-destructive flex items-center gap-1">
+          <span className="inline-block w-1 h-1 rounded-full bg-destructive shrink-0" />
+          {t(error)}
+        </p>
+      )}
     </div>
   );
 }

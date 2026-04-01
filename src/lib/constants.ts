@@ -4,12 +4,21 @@
 
 /** Reservation statuses eligible for online check-in. */
 export const ELIGIBLE_CHECKIN_STATUSES = new Set([
-  "CONFIRMED",
-  "PENDING",
-  "pending_checkin",
-  "confirmed",
   "pending",
+  "confirmed",
+  "pending_checkin",
 ]);
+
+/** All valid reservation status values. */
+export const RESERVATION_STATUSES = [
+  "pending",
+  "confirmed",
+  "checked_in",
+  "checked_out",
+  "cancelled",
+  "cancelled_by_guest",
+  "cancelled_by_hotel",
+] as const;
 
 /** Maximum number of guests per check-in. */
 export const MAX_GUESTS = 10;

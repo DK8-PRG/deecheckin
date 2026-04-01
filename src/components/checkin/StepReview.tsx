@@ -1,7 +1,16 @@
 import type { UseFormReturn } from "react-hook-form";
 import type { CheckinFormData } from "@/schemas/guest.schema";
-import { User } from "lucide-react";
-import type { Reservation, TranslationFn } from "./types";
+import { isCzechNationality } from "@/schemas/guest.schema";
+import {
+  User,
+  MapPin,
+  Briefcase,
+  Phone,
+  Mail,
+  FileText,
+  Globe,
+} from "lucide-react";
+import type { CheckinReservation, TranslationFn } from "./types";
 
 export function StepReview({
   form,
@@ -9,7 +18,7 @@ export function StepReview({
   t,
 }: Readonly<{
   form: UseFormReturn<CheckinFormData>;
-  reservation: Reservation;
+  reservation: CheckinReservation;
   t: TranslationFn;
 }>) {
   const guests = form.watch("guests");
@@ -38,12 +47,16 @@ export function StepReview({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold">{t("reviewTitle")}</h2>
-      <p className="text-sm text-muted-foreground">{t("reviewDescription")}</p>
+      <div>
+        <h2 className="text-lg font-semibold">{t("reviewTitle")}</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          {t("reviewDescription")}
+        </p>
+      </div>
 
-      {/* Reservation summary line */}
-      <div className="text-sm p-3 rounded-lg bg-muted">
-        <span className="font-medium">
+      {/* Reservation summary */}
+      <div className="text-sm p-4 rounded-xl bg-primary/5 border border-primary/10">
+        <span className="font-medium text-primary">
           {t("completingForReservation", {
             reservationId: reservation.book_number ?? "",
           })}
@@ -54,81 +67,107 @@ export function StepReview({
       {guests.map((guest, i) => (
         <div
           key={`review-guest-${guest.guest_index}`}
-          className="rounded-lg border border-border p-4 space-y-3"
+          className="rounded-2xl border border-border bg-white shadow-sm overflow-hidden"
         >
-          <h3 className="text-sm font-semibold flex items-center gap-2">
-            <User className="w-4 h-4" />
-            {t("guestLabel", { number: i + 1 })}
-            {" — "}
-            {guest.first_name} {guest.last_name}
-          </h3>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
-            <span className="text-muted-foreground">
-              {t("field.birthDate.label")}
-            </span>
-            <span>{guest.birth_date}</span>
-            <span className="text-muted-foreground">
-              {t("field.nationality.label")}
-            </span>
-            <span>{guest.nationality}</span>
-            <span className="text-muted-foreground">
-              {t("field.documentType.label")}
-            </span>
-            <span>{docTypeLabel(guest.document_type)}</span>
-            <span className="text-muted-foreground">
-              {t("field.documentNumber.label")}
-            </span>
-            <span>{guest.document_number}</span>
-            <span className="text-muted-foreground">
-              {t("section.address")}
-            </span>
-            <span>
-              {guest.address_street}, {guest.address_city}, {guest.address_zip},{" "}
-              {guest.address_country}
-            </span>
-            <span className="text-muted-foreground">
-              {t("field.stayPurpose.label")}
-            </span>
-            <span>{purposeLabel(guest.stay_purpose)}</span>
-            {guest.phone && (
-              <>
-                <span className="text-muted-foreground">
-                  {t("field.phone.label")}
-                </span>
-                <span>{guest.phone}</span>
-              </>
+          {/* Guest header */}
+          <div className="px-5 py-3 bg-slate-50/50 border-b flex items-center gap-2">
+            <User className="w-4 h-4 text-primary" />
+            <h3 className="text-sm font-semibold">
+              {t("guestLabel", { number: i + 1 })}
+              {" — "}
+              <span className="text-foreground">
+                {guest.first_name} {guest.last_name}
+              </span>
+            </h3>
+          </div>
+
+          <div className="p-5 space-y-3">
+            {/* Personal info row */}
+            <div className="flex items-start gap-3 text-sm">
+              <Globe className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+              <div>
+                <p className="text-foreground">
+                  {guest.birth_date} · {guest.nationality}
+                </p>
+              </div>
+            </div>
+
+            {/* Document info */}
+            {!isCzechNationality(guest.nationality) && guest.document_type && (
+              <div className="flex items-start gap-3 text-sm">
+                <FileText className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-foreground">
+                    {docTypeLabel(guest.document_type)}: {guest.document_number}
+                  </p>
+                  {guest.issuing_country && (
+                    <p className="text-muted-foreground text-xs">
+                      {t("field.issuingCountry.label")}: {guest.issuing_country}
+                    </p>
+                  )}
+                </div>
+              </div>
             )}
-            {guest.email && (
-              <>
-                <span className="text-muted-foreground">
-                  {t("field.email.label")}
-                </span>
-                <span>{guest.email}</span>
-              </>
+
+            {/* Address */}
+            <div className="flex items-start gap-3 text-sm">
+              <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+              <p className="text-foreground">
+                {guest.address_street}, {guest.address_city} {guest.address_zip}
+                , {guest.address_country}
+              </p>
+            </div>
+
+            {/* Purpose */}
+            <div className="flex items-start gap-3 text-sm">
+              <Briefcase className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+              <p className="text-foreground">
+                {purposeLabel(guest.stay_purpose)}
+              </p>
+            </div>
+
+            {/* Contact */}
+            {(guest.phone || guest.email) && (
+              <div className="flex items-start gap-3 text-sm">
+                {guest.phone ? (
+                  <Phone className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                ) : (
+                  <Mail className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                )}
+                <div>
+                  {guest.phone && (
+                    <p className="text-foreground">{guest.phone}</p>
+                  )}
+                  {guest.email && (
+                    <p className="text-foreground">{guest.email}</p>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         </div>
       ))}
 
       {/* Consent */}
-      <div className="rounded-lg border border-border p-4">
-        <label className="flex items-start gap-3 cursor-pointer">
+      <div className="rounded-2xl border border-border bg-white shadow-sm p-5">
+        <label className="flex items-start gap-3 cursor-pointer group">
           <input
             type="checkbox"
             {...register("consent")}
-            className="mt-0.5 h-4 w-4 rounded border-input text-primary focus:ring-primary"
+            className="mt-1 h-5 w-5 rounded border-input text-primary focus:ring-primary accent-primary"
           />
           <div>
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium group-hover:text-primary transition-colors">
               {t("field.consent.label")}
             </span>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
               {t("field.consent.text")}
             </p>
           </div>
         </label>
         {errors.consent?.message && (
-          <p className="mt-2 text-sm text-destructive">
+          <p className="mt-3 text-sm text-destructive flex items-center gap-1.5">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-destructive shrink-0" />
             {t(errors.consent.message)}
           </p>
         )}

@@ -44,6 +44,8 @@ export interface Reservation {
   payment_type: string | null;
   pin_code: string | null;
   last_status_update: string | null;
+  ical_uid: string | null;
+  external_reference: string | null;
   created_at: string | null;
 }
 
@@ -62,6 +64,8 @@ export interface ReservationInsert {
   remarks?: string;
   phone_number?: string;
   special_requests?: string;
+  ical_uid?: string;
+  external_reference?: string;
   /** Set automatically by the repository from the auth session. */
   user_id?: string;
 }

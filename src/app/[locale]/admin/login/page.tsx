@@ -5,6 +5,9 @@ import { useTranslations } from "next-intl";
 import { useParams, useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { signIn } from "@/actions/auth";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
   const t = useTranslations("auth");
@@ -12,7 +15,7 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const locale = params.locale as string;
-  const redirectTo = searchParams.get("redirectTo") || "/dashboard";
+  const redirectTo = searchParams.get("redirectTo") || "/admin/dashboard";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,9 +38,6 @@ export default function LoginPage() {
     router.push(redirectTo);
   }
 
-  const inputClass =
-    "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm space-y-6">
@@ -51,10 +51,8 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium leading-none">
-              {t("emailLabel")}
-            </label>
-            <input
+            <Label htmlFor="email">{t("emailLabel")}</Label>
+            <Input
               id="email"
               type="email"
               required
@@ -62,18 +60,12 @@ export default function LoginPage() {
               placeholder={t("emailPlaceholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={inputClass}
             />
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium leading-none"
-            >
-              {t("passwordLabel")}
-            </label>
-            <input
+            <Label htmlFor="password">{t("passwordLabel")}</Label>
+            <Input
               id="password"
               type="password"
               required
@@ -81,25 +73,20 @@ export default function LoginPage() {
               placeholder={t("passwordPlaceholder")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={inputClass}
             />
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50"
-          >
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? t("loggingIn") : t("loginButton")}
-          </button>
+          </Button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground">
           {t("noAccount")}{" "}
           <a
-            href={`/${locale}/register`}
+            href={`/${locale}/admin/register`}
             className="text-primary hover:underline font-medium"
           >
             {t("registerLink")}

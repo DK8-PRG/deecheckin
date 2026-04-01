@@ -8,13 +8,25 @@ const intlMiddleware = createIntlMiddleware({
   defaultLocale,
 });
 
-// Paths that don't require authentication (relative to /<locale>/)
-const publicPaths = ["/login", "/register", "/auth/callback", "/checkin"];
+// Admin paths that require authentication (relative to /<locale>/)
+const protectedPaths = ["/admin"];
+// Admin paths that are public (login/register)
+const publicAdminPaths = [
+  "/admin/login",
+  "/admin/register",
+  "/admin/auth/callback",
+];
 
-function isPublicPath(pathname: string): boolean {
-  // Strip locale prefix: /cs/login → /login
+function isProtectedPath(pathname: string): boolean {
+  // Strip locale prefix: /cs/admin/dashboard → /admin/dashboard
   const withoutLocale = pathname.replace(/^\/(cs|en)/, "") || "/";
-  return publicPaths.some(
+  // Check if it's under /admin/ but NOT a public admin path
+  const isAdmin = protectedPaths.some(
+    (p) => withoutLocale === p || withoutLocale.startsWith(p + "/"),
+  );
+  if (!isAdmin) return false;
+  // Exclude public admin paths (login, register, callback)
+  return !publicAdminPaths.some(
     (p) => withoutLocale === p || withoutLocale.startsWith(p + "/"),
   );
 }
@@ -31,13 +43,13 @@ export async function middleware(request: NextRequest) {
     intlResponse.cookies.set(cookie.name, cookie.value);
   });
 
-  // 4. Protect private routes — redirect unauthenticated users to login
+  // 4. Protect admin routes — redirect unauthenticated users to login
   const { pathname } = request.nextUrl;
-  if (!user && !isPublicPath(pathname)) {
+  if (!user && isProtectedPath(pathname)) {
     // Detect locale from pathname or fall back to default
     const localeMatch = /^\/(cs|en)/.exec(pathname);
     const locale = localeMatch ? localeMatch[1] : defaultLocale;
-    const loginUrl = new URL(`/${locale}/login`, request.url);
+    const loginUrl = new URL(`/${locale}/admin/login`, request.url);
     loginUrl.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(loginUrl);
   }

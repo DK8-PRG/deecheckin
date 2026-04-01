@@ -12,6 +12,8 @@ interface PropertiesTableProps {
   onEdit?: (property: Property) => void;
   onDelete?: (property: Property) => void;
   onView?: (property: Property) => void;
+  onSettings?: (property: Property) => void;
+  onSync?: (property: Property) => void;
 }
 
 export function PropertiesTable({
@@ -21,26 +23,28 @@ export function PropertiesTable({
   onEdit,
   onDelete,
   onView,
+  onSettings,
+  onSync,
 }: Readonly<PropertiesTableProps>) {
   const t = useTranslations();
 
   // Výchozí handlery
   const handleEdit =
     onEdit ||
-    ((property: Property) => {
-      console.log("Edit property:", property);
+    (() => {
+      // no-op default
     });
 
   const handleDelete =
     onDelete ||
-    ((property: Property) => {
-      console.log("Delete property:", property);
+    (() => {
+      // no-op default
     });
 
   const handleView =
     onView ||
-    ((property: Property) => {
-      console.log("View property:", property);
+    (() => {
+      // no-op default
     });
 
   // Funkce pro kliknutí na řádek
@@ -77,6 +81,16 @@ export function PropertiesTable({
     {
       label: t("edit"),
       onClick: (property) => handleEdit(property),
+      variant: "secondary",
+    },
+    {
+      label: t("propertySettings"),
+      onClick: (property) => onSettings?.(property),
+      variant: "secondary",
+    },
+    {
+      label: t("syncNow"),
+      onClick: (property) => onSync?.(property),
       variant: "secondary",
     },
     {

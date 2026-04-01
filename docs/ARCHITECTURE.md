@@ -1,6 +1,17 @@
 # DeeCheckIn — Produkční architektura
 
-> Tento dokument definuje cílovou architekturu aplikace DeeCheckIn. Slouží jako závazný plán pro refaktoring ze současného stavu (client-only, Context, custom UI) na produkční kvalitu (server-first, Zustand, shadcn/ui, Server Actions, Supabase Auth + RLS).
+> Tento dokument definuje architekturu aplikace DeeCheckIn.
+> Popisuje jak aktuální implementaci (vrstvy, data flow, Supabase), tak cílové vzory a best practices.
+>
+> **Stav migrace (březen 2026):** Většina Fáze 1–3 je hotová (repositories, services, actions, auth, RLS, Server Components). Zustand stores a route groups nejsou implementovány — stav se řeší přes props + useState + revalidatePath.
+>
+> **⚠️ POZOR:** Některé sekce tohoto dokumentu popisují CÍLOVÝ stav, ne aktuální implementaci.
+> Pro aktuální stav viz `PROJECT_STATUS.md`. Hlavní rozdíly:
+>
+> - Route groups `(auth)`, `(admin)`, `(public)` NEJSOU implementovány — routes jsou flat pod `[locale]/admin/`
+> - Zustand stores NEEXISTUJÍ — stav se řeší props + useState
+> - Folder struktura v sekci 2 je CÍLOVÁ — aktuální viz `PROJECT_STATUS.md` sekce 9
+> - Sekce 1 "Analýza problémů" popisuje stav PŘED migrací — většina je opravena
 
 ---
 
@@ -36,6 +47,14 @@
 ---
 
 ## 2. Cílová folder struktura
+
+> **Poznámka:** Níže je cílová struktura. Aktuální stav se liší v detailech:
+>
+> - `stores/` a `hooks/` neexistují (stav se řeší props + useState)
+> - Route groups `(auth)`, `(admin)`, `(public)` nejsou implementovány (flat structure pod `[locale]/`)
+> - `src/lib/ical/` obsahuje iCal parser + adaptéry (Booking.com, Airbnb)
+> - `src/app/api/cron/ical-sync/` obsahuje cron endpoint pro synchronizaci kalendářů
+> - `src/schemas/` (ne `validators/`) obsahuje Zod schémata
 
 ```
 src/
@@ -149,7 +168,7 @@ src/
 │
 ├── middleware.ts                          # Kombinovaný: next-intl + Supabase Auth
 │
-└── validators/                           # Zod schémata (sdílená mezi client + server)
+└── schemas/                           # Zod schémata (sdílená mezi client + server)
     ├── property.schema.ts
     ├── reservation.schema.ts
     ├── guest.schema.ts
@@ -389,7 +408,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   createReservationSchema,
   type CreateReservationInput,
-} from "@/validators/reservation.schema";
+} from "@/schemas/reservation.schema";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -696,7 +715,7 @@ export type ReservationWithGuests = Reservation & {
 ### 7.3 Formulářové typy (Zod)
 
 ```ts
-// src/validators/property.schema.ts
+// src/schemas/property.schema.ts
 import { z } from "zod";
 
 export const createPropertySchema = z.object({
@@ -748,7 +767,7 @@ Server (bezpečnost): action parsuje STEJNÉ zod schéma → nikdy nevěř klien
 // src/actions/properties.ts
 "use server";
 
-import { createPropertySchema } from "@/validators/property.schema";
+import { createPropertySchema } from "@/schemas/property.schema";
 import * as propertiesService from "@/services/properties.service";
 import { revalidatePath } from "next/cache";
 
@@ -1029,63 +1048,48 @@ UI → Action → Service → Repository → Supabase
 
 ---
 
-## 10. Migrační plán (fáze)
+## 10. Migrační plán (fáze) — stav
 
-### Fáze 0: Příprava (prerequisity)
+### Fáze 0: Příprava ✅ HOTOVO
 
-```bash
-# 1. Nainstalovat nové závislosti
-npm install @supabase/ssr zustand sonner @tanstack/react-table
+Dependencies nainstalované: `@supabase/ssr`, `react-hook-form`, `zod`, `sonner`, Radix UI primitiva, `next-intl`.
+Zustand je v dependencies ale nepoužívá se (stav řešen props + revalidatePath).
 
-# 2. Inicializovat shadcn/ui
-npx shadcn@latest init
-# Vybrat: New York styl, Zinc barvy, CSS variables: Ano
+### Fáze 1: Infrastruktura ✅ HOTOVO
 
-# 3. Přidat shadcn/ui komponenty
-npx shadcn@latest add button input dialog table card badge select form dropdown-menu sheet toast
+1. ✅ `src/lib/supabase/server.ts` — `createServerClient()`, `createAdminClient()`, `getUser()`, `requireUser()`
+2. ✅ `src/lib/supabase/client.ts` — browser klient
+3. ✅ `src/types/` — manuálně definované typy (property, reservation, guest, action)
+4. ✅ `src/schemas/` — Zod schémata (property, reservation, guest)
+5. ✅ `src/repositories/` — properties, reservations, guests
+6. ✅ `src/services/` — properties, reservations, guests, ical-sync
+7. ✅ `src/actions/` — auth, properties, reservations, guests, checkin, instructions
 
-# 4. Generovat Supabase typy
-npx supabase gen types typescript --project-id <ID> > src/types/database.ts
+### Fáze 2: Auth + RLS ✅ HOTOVO
 
-# 5. Přidat @supabase/ssr
-npm install @supabase/ssr
-```
+1. ✅ RLS politiky na všech tabulkách (user_id based)
+2. ✅ Supabase Auth (email + heslo)
+3. ✅ Middleware (auth guard + next-intl routing)
+4. ✅ Login + register stránky
+5. ✅ Admin layout s DashboardShell
 
-### Fáze 1: Infrastruktura (bez UI změn)
+### Fáze 3: Migrace stránek ✅ HOTOVO
 
-1. Vytvořit `src/lib/supabase/server.ts` a `client.ts`
-2. Vytvořit `src/types/database.ts` a `src/types/domain.ts`
-3. Vytvořit `src/validators/*.schema.ts`
-4. Vytvořit `src/repositories/*.repository.ts` (přesunout logiku z `db.ts`)
-5. Vytvořit `src/services/*.service.ts`
-6. Vytvořit `src/actions/*.ts`
-7. Vytvořit `src/stores/*.store.ts`
+1. ✅ Properties — Server Component + Client CRUD + nastavení (9 polí)
+2. ✅ Reservations — Server Component + Client tabulka + inline edit
+3. ✅ Dashboard — Server Component se statistikami
+4. ✅ Check-in — veřejná stránka, čistý guest UI, 3-krokový wizard
+5. ✅ iCal synchronizace — parser, adaptéry, cron endpoint, admin client
 
-### Fáze 2: Auth + RLS
+### Fáze 4: Design systém — ČÁSTEČNĚ
 
-1. Nasadit RLS politiky na Supabase
-2. Nastavit Supabase Auth (email + heslo pro adminy)
-3. Aktualizovat middleware (auth + i18n)
-4. Vytvořit login stránku
-5. Přidat auth check do admin layoutu
-
-### Fáze 3: Migrace stránek (po jedné)
-
-1. **Properties** — Route group `(admin)`, Server Component + Client tabulka
-2. **Reservations** — Stejný vzor
-3. **Dashboard** — Server Component s real datay
-4. **Check-in** — Zůstává `(public)`, aktualizovat na Server Actions
-5. Odstranit `PropertiesContext.tsx` a `ReservationsContext.tsx`
-6. Odstranit `src/lib/db.ts` (nahrazeno repozitáři)
-
-### Fáze 4: Design systém
-
-1. Nahradit vlastní `Modal` → shadcn `Dialog`
-2. Nahradit tabulky → shadcn `DataTable` + @tanstack/react-table
-3. Nahradit formuláře → shadcn `Form` + react-hook-form
-4. Implementovat AdminShell (Sidebar + TopBar)
-5. Přidat toasty (sonner)
-6. Responsivní design (Sheet pro mobile sidebar)
+1. ✅ Dialog komponenty (Radix UI base)
+2. ✅ DataTable (vlastní implementace)
+3. ✅ Formuláře s react-hook-form + zodResolver
+4. ✅ AdminSidebar + DashboardShell layout
+5. ✅ Toast notifikace
+6. ❌ Responsivní design (mobilní sidebar) — CHYBÍ
+7. ❌ Zustand stores — NEIMPLEMENTOVÁNO (není potřeba v aktuálním rozsahu)
 
 ---
 

@@ -60,6 +60,7 @@
       "text": "Pro účely vašeho ubytování a v souladu s platnou legislativou České republiky (zejména zákon č. 565/1990 Sb., o místních poplatcích, a zákon č. 326/1999 Sb., o pobytu cizinců na území ČR) jsme povinni shromažďovat a uchovávat následující osobní údaje. Tyto údaje budou použity výhradně pro splnění zákonných povinností a pro interní potřeby ubytovatele související s vaším pobytem.",
       "legalBasis": "Zpracování je nezbytné pro splnění právní povinnosti, která se na správce vztahuje."
     },
+    "foreignerDocumentNotice": "Dle zákona č. 326/1999 Sb. musí cizinci předložit údaje o cestovním dokladu.",
     "section": {
       "personalInfo": "Osobní údaje",
       "identityDocument": "Doklad totožnosti",
@@ -82,7 +83,8 @@
         "label": "Datum narození"
       },
       "nationality": {
-        "label": "Státní občanství"
+        "label": "Státní občanství",
+        "placeholder": "např. CZ, Česká republika"
       },
       "gender": {
         "label": "Pohlaví",
@@ -101,6 +103,10 @@
       },
       "documentNumber": {
         "label": "Číslo dokladu totožnosti"
+      },
+      "issuingCountry": {
+        "label": "Stát vydání dokladu",
+        "placeholder": "např. Německo, Slovensko..."
       },
       "addressStreet": {
         "label": "Ulice a číslo popisné"
@@ -146,6 +152,18 @@
       "title": "Check-in úspěšně dokončen",
       "message": "Děkujeme za dokončení online check-inu pro rezervaci č. {reservationId}. Přejeme Vám příjemný pobyt!"
     },
+    "instructions": {
+      "title": "Instrukce k příjezdu",
+      "address": "Adresa",
+      "accessCode": "Přístupový kód",
+      "wifi": "WiFi",
+      "wifiNetwork": "Síť",
+      "wifiPassword": "Heslo",
+      "houseRules": "Domovní řád",
+      "checkinInfo": "Jak se dostat k ubytování",
+      "contact": "Kontakt na majitele",
+      "noInstructions": "Majitel zatím nenastavil příjezdové instrukce. V případě dotazů jej kontaktujte přímo."
+    },
     "error": {
       "alreadyCheckedIn": "Pro tuto rezervaci již byl check-in proveden.",
       "reservationCancelled": "Tato rezervace byla zrušena a nelze provést check-in.",
@@ -184,6 +202,12 @@
   "no": "Ne",
   "registeredAt": "Registrováno",
   "noReservations": "Žádné rezervace",
+  "copyCheckinLink": "Zkopírovat check-in link",
+  "copied": "Zkopírováno!",
+  "messageTemplate": "Šablona zprávy",
+  "copyToClipboard": "Zkopírovat do schránky",
+  "overlapWarningTitle": "Překrývající se rezervace",
+  "checkinMessageTemplate": "Dobrý den {guestName},\nděkujeme za Vaši rezervaci. Prosím vyplňte online check-in před příjezdem:\n{link}\nDěkujeme a těšíme se na Vás!",
   "checkout": "Check-out",
   "checkoutConfirm": "Potvrzení check-outu",
   "checkoutConfirmMessage": "Opravdu chcete provést check-out pro rezervaci č. {bookNumber}?",
@@ -197,6 +221,35 @@
   "confirmDelete": "Potvrzení smazání",
   "deleteConfirmMessage": "Opravdu chcete smazat jednotku {name}? Tato akce je nevratná.",
   "noProperties": "Žádné jednotky",
+  "propertySettings": "Nastavení jednotky",
+  "propertySettingsDescription": "Nastavení příjezdových instrukcí, WiFi, kontaktních údajů a iCal synchronizace.",
+  "checkinInstructions": "Příjezdové instrukce",
+  "checkinInstructionsPlaceholder": "Jak se dostat k ubytování, kde vyzvednout klíč...",
+  "accessCode": "Přístupový kód",
+  "accessCodePlaceholder": "Kód ke dveřím, číslo klíčenky...",
+  "wifiName": "Název WiFi",
+  "wifiPassword": "Heslo k WiFi",
+  "houseRules": "Domovní řád",
+  "houseRulesPlaceholder": "Pravidla domu, tiché hodiny...",
+  "contactPhone": "Kontaktní telefon",
+  "contactEmail": "Kontaktní e-mail",
+  "icalBookingUrl": "Booking.com iCal URL",
+  "icalBookingUrlPlaceholder": "https://admin.booking.com/...",
+  "icalAirbnbUrl": "Airbnb iCal URL",
+  "icalAirbnbUrlPlaceholder": "https://www.airbnb.com/calendar/ical/...",
+  "settingsSaved": "Nastavení uloženo",
+  "sectionAccess": "Přístup a instrukce",
+  "sectionWifi": "WiFi",
+  "sectionContact": "Kontakt",
+  "sectionIcal": "Synchronizace kalendáře",
+  "syncNow": "Synchronizovat",
+  "syncing": "Synchronizuji…",
+  "syncSuccess": "Synchronizace dokončena: {created} nových, {updated} aktualizovaných, {cancelled} zrušených.",
+  "syncError": "Chyba synchronizace",
+  "sourceBooking": "Booking",
+  "sourceAirbnb": "Airbnb",
+  "sourceManual": "Vlastní",
+  "noIcalUrl": "Nastavte iCal URL v nastavení jednotky",
   "addReservation": "Přidat rezervaci",
   "editReservation": "Upravit rezervaci",
   "guestName": "Jméno hosta",
@@ -213,6 +266,13 @@
   "specialRequests": "Speciální požadavky",
   "reservationDetail": "Detail rezervace",
   "deleteReservationConfirmMessage": "Opravdu chcete smazat rezervaci pro {guest} (příjezd {checkIn})? Tato akce je nevratná.",
+  "errorOccurred": "Něco se pokazilo",
+  "tryAgain": "Zkusit znovu",
+  "addGuestName": "Doplňte jméno",
+  "quickEditName": "Rychlá úprava jména",
+  "guestNamePlaceholder": "Jméno hosta",
+  "saving": "Ukládám…",
+  "nameSaved": "Jméno uloženo",
   "auth": {
     "loginTitle": "Přihlášení",
     "loginSubtitle": "Zadejte e-mail a heslo",
@@ -240,5 +300,167 @@
     "registerError": "Registrace se nezdařila. Zkuste to prosím znovu.",
     "passwordMismatch": "Hesla se neshodují.",
     "passwordTooShort": "Heslo musí mít alespoň 6 znaků."
+  },
+  "guestLanding": {
+    "bookNow": "Rezervovat",
+    "bookingSuccess": "Rezervace byla úspěšně vytvořena! Brzy obdržíte potvrzení e-mailem.",
+    "bookingError": "Rezervaci se nepodařilo vytvořit. Zkuste to prosím znovu.",
+    "bookingOverlap": "Vybraný termín je již obsazen. Zvolte prosím jiný termín.",
+    "locale": "cs",
+    "aboutTitle": "O ubytování",
+    "availabilityTitle": "Dostupnost",
+    "checkinTitle": "Online Check-in",
+    "infoTitle": "Pokyny pro hosty",
+    "contactTitle": "Kontakt",
+    "poweredBy": "Provozováno přes DeeCheckIn",
+    "actionCheckin": "Online Check-in",
+    "actionCheckinDesc": "Vyplňte údaje pro check-in online.",
+    "actionAvailability": "Dostupnost",
+    "actionAvailabilityDesc": "Podívejte se na volné termíny.",
+    "actionContact": "Kontakt",
+    "actionContactDesc": "Máte dotaz? Kontaktujte nás.",
+    "available": "Volné",
+    "occupied": "Obsazeno",
+    "today": "Dnes",
+    "checkinDescription": "Zadejte číslo své rezervace pro online check-in nebo zobrazení pokynů.",
+    "checkinVerified": "Check-in potvrzen ✅",
+    "checkinVerifiedDesc": "Informace o ubytování jsou nyní k dispozici níže.",
+    "addressLabel": "Adresa",
+    "accessCodeLabel": "Přístupový kód",
+    "lockedHint": "Dostupné po ověření čísla rezervace",
+    "wifiNetwork": "Síť",
+    "wifiPassword": "Heslo",
+    "houseRulesLabel": "Domovní řád",
+    "hostNote": "Poznámka od hostitele",
+    "phoneLabel": "Telefon",
+    "emailLabel": "E-mail",
+    "copy": "Kopírovat",
+    "slug": "URL slug",
+    "slugPlaceholder": "napr. cosy-cave-station",
+    "slugHelp": "Adresa veřejné stránky: /p/{slug}",
+    "description": "Popis pro hosty",
+    "descriptionPlaceholder": "Krátký popis ubytování pro veřejnou stránku...",
+    "publicPageEnabled": "Veřejná stránka aktivní",
+    "publicPageLink": "Odkaz na veřejnou stránku",
+    "notFound": "Stránka nenalezena",
+    "notFoundDesc": "Tato veřejná stránka neexistuje nebo není aktivní."
+  },
+  "IndependentCheckin": {
+    "pageTitle": "Online Check-in",
+    "pageSubtitle": "Vyplňte prosím následující údaje pro registraci pobytu.",
+    "step": {
+      "stayInfo": "Pobyt",
+      "guestData": "Údaje hostů",
+      "review": "Kontrola"
+    },
+    "stayDates": "Termín pobytu",
+    "checkInDate": "Datum příjezdu",
+    "checkOutDate": "Datum odjezdu",
+    "guestCount": "Počet hostů",
+    "guestCountHint": "Vyberte počet hostů včetně dětí.",
+    "guestLabel": "Host {number}",
+    "primaryGuest": "hlavní",
+    "addGuest": "Přidat hosta",
+    "removeGuest": "Odebrat",
+    "reviewTitle": "Zkontrolujte zadané údaje",
+    "reviewDescription": "Prosím zkontrolujte níže uvedené údaje před odesláním.",
+    "reviewDates": "Termín pobytu",
+    "reviewGuests": "Hostů: {count}",
+    "foreignerDocumentNotice": "Dle zákona č. 326/1999 Sb. musí cizinci předložit údaje o cestovním dokladu.",
+    "section": {
+      "personalInfo": "Osobní údaje",
+      "identityDocument": "Doklad totožnosti",
+      "address": "Adresa trvalého pobytu",
+      "stayDetails": "Podrobnosti o pobytu"
+    },
+    "field": {
+      "firstName": { "label": "Jméno" },
+      "lastName": { "label": "Příjmení" },
+      "birthDate": { "label": "Datum narození" },
+      "nationality": {
+        "label": "Státní občanství",
+        "placeholder": "např. CZ, Česká republika"
+      },
+      "documentType": {
+        "label": "Typ dokladu totožnosti",
+        "select": "Vyberte typ dokladu",
+        "op": "Občanský průkaz",
+        "pas": "Cestovní pas",
+        "jine": "Jiný doklad"
+      },
+      "documentNumber": { "label": "Číslo dokladu totožnosti" },
+      "issuingCountry": {
+        "label": "Stát vydání dokladu",
+        "placeholder": "např. Německo, Slovensko..."
+      },
+      "addressStreet": { "label": "Ulice a číslo popisné" },
+      "addressCity": { "label": "Město/Obec" },
+      "addressZip": { "label": "PSČ" },
+      "addressCountry": { "label": "Stát" },
+      "stayPurpose": {
+        "label": "Účel pobytu",
+        "select": "Vyberte účel pobytu",
+        "rekreace": "Rekreace",
+        "sluzebni": "Služební cesta",
+        "jine": "Jiný"
+      },
+      "phone": { "label": "Telefonní číslo (nepovinné)" },
+      "email": { "label": "E-mailová adresa (nepovinné)" },
+      "consent": {
+        "label": "Souhlas se zpracováním osobních údajů",
+        "text": "Prohlašuji, že veškeré mnou uvedené údaje jsou pravdivé a souhlasím s jejich zpracováním pro účely ubytování."
+      }
+    },
+    "dataCollectionNotice": {
+      "title": "Informace o zpracování osobních údajů",
+      "text": "Pro účely vašeho ubytování a v souladu s platnou legislativou České republiky (zejména zákon č. 565/1990 Sb., o místních poplatcích, a zákon č. 326/1999 Sb., o pobytu cizinců na území ČR) jsme povinni shromažďovat a uchovávat následující osobní údaje."
+    },
+    "button": {
+      "submit": "Odeslat check-in",
+      "submitting": "Odesílám...",
+      "continue": "Pokračovat",
+      "back": "Zpět"
+    },
+    "success": {
+      "title": "Check-in úspěšně dokončen!",
+      "message": "Děkujeme za vyplnění formuláře. Přejeme Vám příjemný pobyt!",
+      "backToProperty": "Zpět na stránku ubytování"
+    },
+    "validation": {
+      "required": "Toto pole je povinné.",
+      "dateFormat": "Zadejte prosím datum ve formátu RRRR-MM-DD.",
+      "invalidEmail": "Zadejte prosím platnou e-mailovou adresu.",
+      "consentRequired": "Pro pokračování je nutný váš souhlas.",
+      "atLeastOneGuest": "Je vyžadován alespoň jeden host.",
+      "checkOutAfterCheckIn": "Datum odjezdu musí být po datu příjezdu."
+    }
+  },
+  "landing": {
+    "heroTitle": "Vítejte u nás",
+    "heroSubtitle": "Vyberte si ubytování a proveďte online check-in.",
+    "ctaLogin": "Přihlásit se",
+    "noProperties": "Momentálně nejsou k dispozici žádné ubytovací jednotky.",
+    "viewDetail": "Detail",
+    "checkin": "Check-in",
+    "footer": "© {year} DeeCheckIn"
+  },
+  "guests": "Hosté",
+  "adminGuests": {
+    "title": "Nepárovaní hosté",
+    "description": "Check-iny bez přiřazené rezervace",
+    "noUnpaired": "Všichni hosté jsou přiřazeni k rezervacím.",
+    "guestCount": "{count} hostů",
+    "checkinDate": "Check-in",
+    "checkoutDate": "Check-out",
+    "createdAt": "Vytvořeno",
+    "pair": "Přiřadit",
+    "pairDialogTitle": "Přiřadit k rezervaci",
+    "pairDialogDescription": "Vyberte rezervaci, ke které chcete přiřadit tuto skupinu hostů.",
+    "noMatchingReservations": "Nebyly nalezeny odpovídající rezervace.",
+    "pairSuccess": "Hosté byli úspěšně přiřazeni k rezervaci.",
+    "pairError": "Nepodařilo se přiřadit hosty.",
+    "reservation": "Rezervace",
+    "property": "Jednotka",
+    "guestNames": "Hosté ve skupině"
   }
 }

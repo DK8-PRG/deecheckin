@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   ]);
 
   const checkedInCount = reservations.filter(
-    (r) => r.reservation_status === "CHECKED_IN",
+    (r) => r.status === "CHECKED_IN",
   ).length;
   const totalGuests = reservations.reduce((sum, r) => sum + (r.people || 0), 0);
 
@@ -104,14 +104,14 @@ export default async function DashboardPage() {
                       <td className="px-4 py-3">
                         <Badge
                           variant={
-                            r.reservation_status === "CHECKED_IN"
+                            r.status === "CHECKED_IN"
                               ? "success"
-                              : r.reservation_status === "CANCELLED"
+                              : r.status === "CANCELLED"
                                 ? "destructive"
                                 : "secondary"
                           }
                         >
-                          {r.reservation_status || r.status}
+                          {r.status}
                         </Badge>
                       </td>
                     </tr>

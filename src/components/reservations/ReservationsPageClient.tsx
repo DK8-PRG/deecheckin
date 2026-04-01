@@ -13,7 +13,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Plus, Pencil, Trash2, Eye } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Eye,
+  Link2,
+  MessageSquare,
+  AlertTriangle,
+  Check,
+  X,
+} from "lucide-react";
+import { quickUpdateGuestNameAction } from "@/actions/reservations";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -49,6 +60,32 @@ function StatusBadge({ status }: Readonly<{ status: string | null }>) {
   );
 }
 
+function SourceBadge({ source }: Readonly<{ source: string | null }>) {
+  const colorMap: Record<string, string> = {
+    booking: "bg-blue-600 text-white",
+    airbnb: "bg-rose-500 text-white",
+    manual: "bg-gray-100 text-gray-700",
+  };
+
+  const labelMap: Record<string, string> = {
+    booking: "Booking",
+    airbnb: "Airbnb",
+  };
+
+  if (!source) return <span className="text-muted-foreground">—</span>;
+
+  const color = colorMap[source] ?? "bg-gray-100 text-gray-700";
+  const label = labelMap[source] ?? source;
+
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${color}`}
+    >
+      {label}
+    </span>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Main client component
 // ---------------------------------------------------------------------------
@@ -70,6 +107,12 @@ export function ReservationsPageClient({
   const [viewReservation, setViewReservation] = useState<Reservation | null>(
     null,
   );
+  const [messageReservation, setMessageReservation] =
+    useState<Reservation | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [editingNameId, setEditingNameId] = useState<string | null>(null);
+  const [nameValue, setNameValue] = useState("");
+  const [savingName, setSavingName] = useState(false);
 
   // Property name lookup
   const propertyName = (id: string | null) =>
@@ -99,6 +142,54 @@ export function ReservationsPageClient({
     setDeletingReservation(r);
     setDeleteDialogOpen(true);
   };
+
+  const copyCheckinLink = async (r: Reservation) => {
+    const baseUrl = globalThis.location.origin;
+    const locale = globalThis.location.pathname.split("/")[1] || "cs";
+    // Use book_number as the primary identifier
+    const link = r.book_number
+      ? `${baseUrl}/${locale}/checkin?book=${r.book_number}`
+      : `${baseUrl}/${locale}/checkin`;
+    await navigator.clipboard.writeText(link);
+    setCopiedId(r.id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const getMessageTemplate = (r: Reservation) => {
+    const baseUrl = globalThis.location.origin;
+    const locale = globalThis.location.pathname.split("/")[1] || "cs";
+    const link = r.book_number
+      ? `${baseUrl}/${locale}/checkin?book=${r.book_number}`
+      : `${baseUrl}/${locale}/checkin`;
+    const guestName = r.guest_names ?? t("guest");
+    return t("checkinMessageTemplate", { guestName, link });
+  };
+
+  const startNameEdit = (r: Reservation) => {
+    setEditingNameId(r.id);
+    setNameValue(r.guest_names ?? "");
+  };
+
+  const cancelNameEdit = () => {
+    setEditingNameId(null);
+    setNameValue("");
+  };
+
+  const saveNameEdit = async (id: string) => {
+    if (!nameValue.trim()) return;
+    setSavingName(true);
+    const result = await quickUpdateGuestNameAction(id, nameValue);
+    setSavingName(false);
+    if (result.success) {
+      setEditingNameId(null);
+      setNameValue("");
+      router.refresh();
+    }
+  };
+
+  // Is this an anonymous iCal import (has ical_uid but no guest name)?
+  const isAnonymous = (r: Reservation) =>
+    (!r.guest_names || r.guest_names.trim() === "") && !!r.ical_uid;
 
   return (
     <div className="space-y-4">
@@ -150,21 +241,87 @@ export function ReservationsPageClient({
             {initialReservations.map((r) => (
               <tr
                 key={r.id}
-                className="border-t hover:bg-muted/30 transition-colors"
+                className={`border-t transition-colors ${isAnonymous(r) ? "bg-amber-50/50 hover:bg-amber-50" : "hover:bg-muted/30"}`}
               >
                 <td className="px-4 py-3 font-medium">
-                  {r.guest_names ?? "—"}
+                  {editingNameId === r.id ? (
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="text"
+                        value={nameValue}
+                        onChange={(e) => setNameValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") saveNameEdit(r.id);
+                          if (e.key === "Escape") cancelNameEdit();
+                        }}
+                        className="h-7 w-40 rounded border border-input bg-background px-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                        placeholder={t("guestNamePlaceholder")}
+                        autoFocus
+                        disabled={savingName}
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => saveNameEdit(r.id)}
+                        disabled={savingName || !nameValue.trim()}
+                      >
+                        <Check className="h-3.5 w-3.5 text-green-600" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={cancelNameEdit}
+                        disabled={savingName}
+                      >
+                        <X className="h-3.5 w-3.5 text-muted-foreground" />
+                      </Button>
+                    </div>
+                  ) : isAnonymous(r) ? (
+                    <button
+                      onClick={() => startNameEdit(r)}
+                      className="inline-flex items-center gap-1.5 rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100 transition-colors cursor-pointer"
+                    >
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      {t("addGuestName")}
+                    </button>
+                  ) : (
+                    (r.guest_names ?? "—")
+                  )}
                 </td>
                 <td className="px-4 py-3">{propertyName(r.property_id)}</td>
                 <td className="px-4 py-3">{r.check_in}</td>
                 <td className="px-4 py-3">{r.check_out}</td>
-                <td className="px-4 py-3">{r.source ?? "—"}</td>
                 <td className="px-4 py-3">
-                  <StatusBadge status={r.reservation_status ?? r.status} />
+                  <SourceBadge source={r.source} />
+                </td>
+                <td className="px-4 py-3">
+                  <StatusBadge status={r.status} />
                 </td>
                 <td className="px-4 py-3">{r.price ?? "—"}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => copyCheckinLink(r)}
+                      title={
+                        copiedId === r.id ? t("copied") : t("copyCheckinLink")
+                      }
+                    >
+                      <Link2
+                        className={`h-4 w-4 ${copiedId === r.id ? "text-green-500" : ""}`}
+                      />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setMessageReservation(r)}
+                      title={t("messageTemplate")}
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -261,12 +418,7 @@ export function ReservationsPageClient({
                 value={viewReservation.check_out}
               />
               <DetailRow label={t("source")} value={viewReservation.source} />
-              <DetailRow
-                label={t("status")}
-                value={
-                  viewReservation.reservation_status ?? viewReservation.status
-                }
-              />
+              <DetailRow label={t("status")} value={viewReservation.status} />
               <DetailRow
                 label={t("rooms")}
                 value={String(viewReservation.rooms ?? "—")}
@@ -289,6 +441,42 @@ export function ReservationsPageClient({
                 label={t("specialRequests")}
                 value={viewReservation.special_requests}
               />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Message Template Dialog */}
+      <Dialog
+        open={!!messageReservation}
+        onOpenChange={(open) => {
+          if (!open) setMessageReservation(null);
+        }}
+      >
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{t("messageTemplate")}</DialogTitle>
+          </DialogHeader>
+          {messageReservation && (
+            <div className="space-y-3">
+              <textarea
+                readOnly
+                value={getMessageTemplate(messageReservation)}
+                rows={6}
+                className="w-full rounded-md border border-input bg-muted px-3 py-2 text-sm"
+              />
+              <div className="flex justify-end">
+                <Button
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(
+                      getMessageTemplate(messageReservation),
+                    );
+                  }}
+                  size="sm"
+                >
+                  {t("copyToClipboard")}
+                </Button>
+              </div>
             </div>
           )}
         </DialogContent>

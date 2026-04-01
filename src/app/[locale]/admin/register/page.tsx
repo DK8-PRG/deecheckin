@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { signUp } from "@/actions/auth";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { MIN_PASSWORD_LENGTH } from "@/lib/constants";
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
@@ -26,7 +30,7 @@ export default function RegisterPage() {
       return;
     }
 
-    if (password.length < 8) {
+    if (password.length < MIN_PASSWORD_LENGTH) {
       setError(t("passwordTooShort"));
       return;
     }
@@ -45,9 +49,6 @@ export default function RegisterPage() {
     setLoading(false);
   }
 
-  const inputClass =
-    "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
-
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -59,12 +60,9 @@ export default function RegisterPage() {
           <p className="text-sm text-muted-foreground">
             {t("registerSuccessDescription")}
           </p>
-          <a
-            href={`/${locale}/login`}
-            className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            {t("goToLogin")}
-          </a>
+          <Button asChild>
+            <a href={`/${locale}/admin/login`}>{t("goToLogin")}</a>
+          </Button>
         </div>
       </div>
     );
@@ -85,10 +83,8 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium leading-none">
-              {t("emailLabel")}
-            </label>
-            <input
+            <Label htmlFor="email">{t("emailLabel")}</Label>
+            <Input
               id="email"
               type="email"
               required
@@ -96,18 +92,12 @@ export default function RegisterPage() {
               placeholder={t("emailPlaceholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={inputClass}
             />
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium leading-none"
-            >
-              {t("passwordLabel")}
-            </label>
-            <input
+            <Label htmlFor="password">{t("passwordLabel")}</Label>
+            <Input
               id="password"
               type="password"
               required
@@ -115,18 +105,12 @@ export default function RegisterPage() {
               placeholder={t("passwordPlaceholder")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={inputClass}
             />
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="confirmPassword"
-              className="text-sm font-medium leading-none"
-            >
-              {t("confirmPasswordLabel")}
-            </label>
-            <input
+            <Label htmlFor="confirmPassword">{t("confirmPasswordLabel")}</Label>
+            <Input
               id="confirmPassword"
               type="password"
               required
@@ -134,25 +118,20 @@ export default function RegisterPage() {
               placeholder={t("confirmPasswordPlaceholder")}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={inputClass}
             />
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50"
-          >
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? t("registering") : t("registerButton")}
-          </button>
+          </Button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground">
           {t("hasAccount")}{" "}
           <a
-            href={`/${locale}/login`}
+            href={`/${locale}/admin/login`}
             className="text-primary hover:underline font-medium"
           >
             {t("loginLink")}

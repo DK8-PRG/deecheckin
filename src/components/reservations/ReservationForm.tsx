@@ -17,6 +17,7 @@ import type { Reservation, PropertyOption } from "@/types/reservation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/toast";
 import {
   Select,
   SelectContent,
@@ -39,6 +40,7 @@ export function ReservationForm({
   onCancel,
 }: Readonly<ReservationFormProps>) {
   const t = useTranslations();
+  const { toast } = useToast();
   const isEdit = !!reservation;
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -84,6 +86,15 @@ export function ReservationForm({
       if (!result.success) {
         setServerError(result.error);
         return;
+      }
+
+      if (result.warnings?.length) {
+        toast({
+          title: t("overlapWarningTitle"),
+          description: result.warnings[0],
+          variant: "destructive",
+          duration: 6000,
+        });
       }
 
       onSuccess();

@@ -1,5 +1,7 @@
-import { findAll } from "@/repositories/reservations.repository";
-import { findAllProperties } from "@/repositories/reservations.repository";
+import {
+  findAll,
+  findAllProperties,
+} from "@/repositories/reservations.repository";
 import { DashboardShell } from "@/components/DashboardShell";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { ReservationsPageClient } from "@/components/reservations/ReservationsPageClient";

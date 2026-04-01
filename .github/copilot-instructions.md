@@ -57,59 +57,76 @@ src/
 │   ├── globals.css
 │   ├── [locale]/
 │   │   ├── layout.tsx              # Root layout s providers
-│   │   ├── page.tsx                # Landing (chráněná)
-│   │   ├── login/page.tsx          # Přihlášení (veřejná)
-│   │   ├── register/page.tsx       # Registrace (veřejná)
-│   │   ├── dashboard/page.tsx      # Dashboard se statistikami
-│   │   ├── properties/page.tsx     # CRUD správa ubytovacích jednotek
-│   │   ├── reservations/page.tsx   # CRUD správa rezervací
-│   │   ├── checkin/page.tsx        # Veřejné vyhledání rezervace
-│   │   └── checkin/[reservationId]/page.tsx  # Check-in wizard
+│   │   ├── page.tsx                # Landing — seznam apartmánů (veřejná)
+│   │   ├── [slug]/
+│   │   │   ├── page.tsx            # Guest landing pro apartmán (veřejná)
+│   │   │   └── checkin/page.tsx    # Nezávislý check-in (veřejná)
+│   │   ├── checkin/
+│   │   │   ├── page.tsx            # Vyhledání rezervace (legacy, veřejná)
+│   │   │   └── [reservationId]/page.tsx  # Check-in wizard
+│   │   └── admin/
+│   │       ├── layout.tsx          # Admin layout
+│   │       ├── page.tsx            # Redirect → dashboard
+│   │       ├── dashboard/page.tsx  # Dashboard se statistikami
+│   │       ├── properties/page.tsx # CRUD správa apartmánů
+│   │       ├── reservations/page.tsx # CRUD správa rezervací│   │   │   ├── guests/page.tsx      # Nepárovaní hosté + párování│   │       ├── login/page.tsx      # Přihlášení
+│   │       ├── register/page.tsx   # Registrace
+│   │       └── auth/callback/route.ts  # Auth callback
+│   ├── api/
+│   │   └── cron/
+│   │       └── ical-sync/route.ts  # Cron endpoint pro iCal synchronizaci
 │   └── messages/
-│       ├── cs.json                 # České překlady
+│       ├── cs.json                 # České překlady (~400 klíčů)
 │       └── en.json                 # Anglické překlady
 ├── actions/                        # Server Actions
 │   ├── auth.ts                     # signIn, signUp, signOut
-│   ├── checkin.ts                  # checkinAction
+│   ├── checkin.ts                  # checkinAction, independentCheckinAction
 │   ├── guests.ts                   # getGuestsByBookNumberAction
 │   ├── properties.ts               # CRUD akce properties
-│   └── reservations.ts             # CRUD akce reservations
+│   └── reservations.ts             # CRUD akce + quickUpdateGuestNameAction
 ├── services/                       # Business logika
-│   ├── properties.service.ts
+│   ├── properties.service.ts       # list, listPublic, getById, getBySlug, create, update, remove, getOccupiedDates
 │   ├── reservations.service.ts
-│   └── guests.service.ts
+│   ├── guests.service.ts           # performCheckin, performIndependentCheckin
+│   └── ical-sync.service.ts        # iCal synchronizace
 ├── repositories/                   # Datová vrstva (Supabase queries)
-│   ├── properties.repository.ts
+│   ├── properties.repository.ts    # findAll, findById, findBySlug, findPublicProperties, create, update, remove
 │   ├── reservations.repository.ts
-│   └── guests.repository.ts
+│   └── guests.repository.ts        # findByReservationId, createMany, createManyPublic
 ├── lib/
+│   ├── constants.ts                # Globální konstanty
+│   ├── utils.ts                    # cn() a utility funkce
 │   ├── supabase/
 │   │   ├── client.ts               # Browser Supabase klient
-│   │   ├── server.ts               # Server-side klient (cookies)
-│   │   └── middleware.ts            # Auth session refresh
-│   └── utils.ts                    # cn() a utility funkce
+│   │   ├── server.ts               # Server-side klient + createAdminClient()
+│   │   └── middleware.ts           # Auth session refresh
+│   └── ical/                       # iCal parser + adaptéry
+│       ├── parser.ts, booking-adapter.ts, airbnb-adapter.ts, types.ts, index.ts
 ├── components/
-│   ├── ui/                          # Radix UI + Tailwind komponenty (badge, button, dialog, input...)
-│   ├── checkin/                     # CheckinWizard, StepIndicator
+│   ├── ui/                          # Radix UI + Tailwind (badge, button, dialog, input, label, select, skeleton, stats-card, toast, DataTable, Modal)
+│   ├── guest/                       # GuestLanding, PropertyHero, QuickActions, AvailabilityCalendar, GuestCheckinSection, GuestInfoSection, ContactSection
+│   ├── checkin/                     # CheckinWizard, IndependentCheckinWizard, StepIndicator, StepReservation, StepGuestDetails, StepReview, FormField, types
+│   ├── guests/                      # GuestsPageClient (párování nepárovaných check-inů)
 │   ├── properties/                  # PropertiesPageClient, PropertiesTable
-│   ├── reservations/                # ReservationsPageClient, ReservationForm
+│   ├── reservations/                # ReservationsPageClient, ReservationForm, DeleteReservationDialog
 │   ├── AdminSidebar.tsx             # Navigační sidebar
 │   ├── DashboardShell.tsx           # Layout wrapper admin stránek
 │   ├── DashboardHeader.tsx          # Sticky header
 │   └── LanguageSwitcher.tsx         # Přepínač cs/en
 ├── types/
-│   ├── property.ts                  # Property, PropertyInsert
-│   ├── reservation.ts               # Reservation, ReservationInsert, ActionResult
-│   └── guest.ts                     # Guest, GuestInsert, CheckinSubmission
-├── validators/                      # Zod schémata (sdílená client+server)
+│   ├── action.ts                    # ActionResult<T>
+│   ├── property.ts                  # Property (+ slug, description, public_page_enabled), PropertyInsert, PropertyUpdate
+│   ├── reservation.ts               # Reservation, ReservationInsert, ReservationUpdate
+│   └── guest.ts                     # Guest (reservation_id nullable, + property_id, check_in/out_date, paired_at, checkin_group_id)
+├── schemas/                         # Zod schémata (sdílená client+server)
 │   ├── property.schema.ts
 │   ├── reservation.schema.ts
-│   └── guest.schema.ts
+│   └── guest.schema.ts             # guestSchema + independentCheckinFormSchema + independentCheckinSubmissionSchema
 ├── i18n/
 │   ├── routing.ts                   # locales: ["cs", "en"], defaultLocale: "cs"
 │   ├── request.ts                   # getRequestConfig
 │   └── navigation.ts               # Link, redirect, usePathname, useRouter
-└── middleware.ts                    # Auth guard + next-intl routing
+└── middleware.ts                    # Auth guard (admin/*) + next-intl routing
 ```
 
 ---
@@ -118,25 +135,30 @@ src/
 
 ### properties
 
-- `id` (UUID PK), `name` (text), `address` (text), `user_id` (FK auth.users), `created_at`
+- `id` (UUID PK), `name`, `address`, `checkin_instructions`, `access_code`, `wifi_name`, `wifi_password`, `house_rules`, `contact_phone`, `contact_email`, `ical_booking_url`, `ical_airbnb_url`, `slug` (UNIQUE), `description`, `public_page_enabled` (DEFAULT true), `user_id` (FK auth.users), `created_at`
 
 ### reservations
 
 - `id` (UUID PK), `property_id` (FK properties), `book_number` (serial)
-- 40+ sloupců pro: guest info, check-in/out dates, status, payment, source (booking/airbnb/manual), remarks...
+- 34+ sloupců pro: guest info, check-in/out dates, status (DEFAULT 'pending'), payment, source (booking/airbnb/manual), remarks...
+- `ical_uid` (UNIQUE — deduplikace syncu), `external_reference`
 - `user_id` (FK auth.users), `created_at`
 
 ### guests
 
-- `id` (UUID PK), `reservation_id` (FK reservations), `guest_index` (int)
-- Osobní údaje: jméno, příjmení, datum narození, národnost, doklad (typ + číslo), adresa, účel pobytu
+- `id` (UUID PK), `reservation_id` (FK reservations, **NULLABLE** — nepárovaný check-in), `property_id` (FK properties), `guest_index` (int)
+- Osobní údaje: jméno, příjmení, datum narození, národnost, doklad (typ + číslo + `issuing_country`), adresa, účel pobytu
+- Doklady jsou povinné jen pro ne-české hosty (superRefine validace)
+- `check_in_date`, `check_out_date` (host zadá sám při nezávislém check-inu)
+- `paired_at` (kdy byl spárován s rezervací), `checkin_group_id` (UUID — sdílí hosté z jednoho check-inu)
 - `consent` (boolean — GDPR souhlas), `document_photo_url`, `user_id`, `created_at`
 
 ### RLS
 
 - Všechny tabulky mají RLS zapnuté
-- Properties, reservations: CRUD jen pro vlastní záznamy (`auth.uid() = user_id`)
-- Guests: vlastní záznamy + **veřejný INSERT pro check-in** (hosté mohou vyplnit formulář bez přihlášení)
+- Properties: CRUD pro vlastní záznamy (`auth.uid() = user_id`) + anon SELECT WHERE `public_page_enabled = true`
+- Reservations: CRUD pro vlastní záznamy (žádný veřejný přístup — veřejné operace přes admin client)
+- Guests: vlastní záznamy + **veřejný INSERT pro check-in** (omezeno na `user_id IS NULL`)
 
 ---
 
@@ -144,9 +166,9 @@ src/
 
 - **Přihlášení**: email + heslo → `signInWithPassword` → cookie session
 - **Registrace**: email + heslo → `signUp`
-- **Middleware**: na každém requestu refreshuje session, chrání privátní routes
-- **Veřejné cesty**: `/login`, `/register`, `/auth/callback`, `/checkin/*`
-- **Chráněné cesty**: vše ostatní → redirect na login
+- **Middleware**: na každém requestu refreshuje session, chrání admin routes
+- **Veřejné cesty**: `/[slug]`, `/[slug]/checkin`, `/checkin/*`, `/admin/login`, `/admin/register`, `/admin/auth/callback`
+- **Chráněné cesty**: `/admin/*` (kromě login/register/callback) → redirect na `/admin/login`
 
 ---
 
@@ -164,7 +186,7 @@ src/
 2. **Jazyk UI**: čeština + angličtina (přes i18n)
 3. **Jazyk komunikace s uživatelem**: čeština
 4. **Server Components** jako výchozí — `"use client"` jen tam kde je třeba interakce
-5. **Validace**: Zod schémata v `src/validators/`, sdílená mezi client a server
+5. **Validace**: Zod schémata v `src/schemas/`, sdílená mezi client a server
 6. **Typy**: v `src/types/`, mapují DB schéma
 7. **Styling**: Tailwind CSS utility třídy, Radix UI pro a11y
 8. **Imports**: `@/` alias pro `src/`
@@ -183,7 +205,8 @@ src/
 ## Známé omezení
 
 - Zustand je v dependencies ale zatím se nepoužívá (stav řešen React hooks + Server Components)
-- Legacy context soubory existují jako `_*.legacy.tsx` (vyloučené z tsconfig)
-- Import rezervací z Booking.com/Airbnb není implementován
+- iCal sync importuje pouze check-in/out datum a jméno hosta — ne cenu, email, telefon
 - Upload dokladů (document_photo_url) není implementován
+- Admin párování nepárovaných check-inů s rezervacemi není implementováno
 - Mobilní responsivita je částečná
+- Error/loading boundaries existují jen u některých admin stránek

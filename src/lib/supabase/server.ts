@@ -1,4 +1,5 @@
 import { createServerClient as createSupabaseServerClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -51,4 +52,15 @@ export async function requireUser(locale = "cs") {
     redirect(`/${locale}/login`);
   }
   return user;
+}
+
+/**
+ * Creates a Supabase admin client using the service role key.
+ * Bypasses RLS — use only in trusted server contexts (cron, webhooks).
+ */
+export function createAdminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
 }

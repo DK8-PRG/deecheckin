@@ -60,6 +60,7 @@
       "text": "For the purposes of your accommodation and in accordance with the applicable legislation of the Czech Republic (in particular Act No. 565/1990 Coll., on local fees, and Act No. 326/1999 Coll., on the residence of foreign nationals in the Czech Republic), we are obliged to collect and store the following personal data. This data will be used exclusively to fulfill legal obligations and for the internal needs of the accommodation provider related to your stay.",
       "legalBasis": "Processing is necessary for compliance with a legal obligation to which the controller is subject."
     },
+    "foreignerDocumentNotice": "According to Act No. 326/1999 Coll., foreign nationals must provide travel document details.",
     "section": {
       "personalInfo": "Personal Information",
       "identityDocument": "Identity Document",
@@ -82,7 +83,8 @@
         "label": "Date of Birth"
       },
       "nationality": {
-        "label": "Nationality"
+        "label": "Nationality",
+        "placeholder": "e.g. CZ, Czech Republic"
       },
       "gender": {
         "label": "Gender",
@@ -101,6 +103,10 @@
       },
       "documentNumber": {
         "label": "Identity Document Number"
+      },
+      "issuingCountry": {
+        "label": "Document Issuing Country",
+        "placeholder": "e.g. Germany, Slovakia..."
       },
       "addressStreet": {
         "label": "Street and Number"
@@ -146,6 +152,18 @@
       "title": "Check-in Successfully Completed",
       "message": "Thank you for completing the online check-in for reservation #{reservationId}. We wish you a pleasant stay!"
     },
+    "instructions": {
+      "title": "Arrival Instructions",
+      "address": "Address",
+      "accessCode": "Access Code",
+      "wifi": "WiFi",
+      "wifiNetwork": "Network",
+      "wifiPassword": "Password",
+      "houseRules": "House Rules",
+      "checkinInfo": "How to get there",
+      "contact": "Host Contact",
+      "noInstructions": "The host has not set arrival instructions yet. Please contact them directly if you have questions."
+    },
     "error": {
       "alreadyCheckedIn": "Check-in for this reservation has already been completed.",
       "reservationCancelled": "This reservation has been cancelled and check-in cannot be performed.",
@@ -184,6 +202,12 @@
   "no": "No",
   "registeredAt": "Registered At",
   "noReservations": "No reservations",
+  "copyCheckinLink": "Copy check-in link",
+  "copied": "Copied!",
+  "messageTemplate": "Message Template",
+  "copyToClipboard": "Copy to clipboard",
+  "overlapWarningTitle": "Overlapping reservations",
+  "checkinMessageTemplate": "Dear {guestName},\nThank you for your reservation. Please complete your online check-in before arrival:\n{link}\nThank you and we look forward to welcoming you!",
   "checkout": "Check-out",
   "checkoutConfirm": "Confirm Check-out",
   "checkoutConfirmMessage": "Are you sure you want to check out reservation #{bookNumber}?",
@@ -197,6 +221,35 @@
   "confirmDelete": "Confirm Deletion",
   "deleteConfirmMessage": "Are you sure you want to delete the property {name}? This action cannot be undone.",
   "noProperties": "No properties",
+  "propertySettings": "Property Settings",
+  "propertySettingsDescription": "Configure check-in instructions, WiFi, contact info and iCal sync.",
+  "checkinInstructions": "Check-in Instructions",
+  "checkinInstructionsPlaceholder": "How to get to the property, where to pick up the key...",
+  "accessCode": "Access Code",
+  "accessCodePlaceholder": "Door code, key box number...",
+  "wifiName": "WiFi Name",
+  "wifiPassword": "WiFi Password",
+  "houseRules": "House Rules",
+  "houseRulesPlaceholder": "House rules, quiet hours...",
+  "contactPhone": "Contact Phone",
+  "contactEmail": "Contact Email",
+  "icalBookingUrl": "Booking.com iCal URL",
+  "icalBookingUrlPlaceholder": "https://admin.booking.com/...",
+  "icalAirbnbUrl": "Airbnb iCal URL",
+  "icalAirbnbUrlPlaceholder": "https://www.airbnb.com/calendar/ical/...",
+  "settingsSaved": "Settings saved",
+  "sectionAccess": "Access & Instructions",
+  "sectionWifi": "WiFi",
+  "sectionContact": "Contact",
+  "sectionIcal": "Calendar Sync",
+  "syncNow": "Sync Now",
+  "syncing": "Syncing…",
+  "syncSuccess": "Sync complete: {created} new, {updated} updated, {cancelled} cancelled.",
+  "syncError": "Sync error",
+  "sourceBooking": "Booking",
+  "sourceAirbnb": "Airbnb",
+  "sourceManual": "Manual",
+  "noIcalUrl": "Set iCal URL in property settings",
   "addReservation": "Add reservation",
   "editReservation": "Edit reservation",
   "guestName": "Guest name",
@@ -213,6 +266,13 @@
   "specialRequests": "Special requests",
   "reservationDetail": "Reservation detail",
   "deleteReservationConfirmMessage": "Are you sure you want to delete the reservation for {guest} (check-in {checkIn})? This action cannot be undone.",
+  "errorOccurred": "Something went wrong",
+  "tryAgain": "Try again",
+  "addGuestName": "Add guest name",
+  "quickEditName": "Quick name edit",
+  "guestNamePlaceholder": "Guest name",
+  "saving": "Saving…",
+  "nameSaved": "Name saved",
   "auth": {
     "loginTitle": "Sign In",
     "loginSubtitle": "Enter your email and password",
@@ -240,5 +300,167 @@
     "registerError": "Registration failed. Please try again.",
     "passwordMismatch": "Passwords do not match.",
     "passwordTooShort": "Password must be at least 6 characters."
+  },
+  "guestLanding": {
+    "bookNow": "Book now",
+    "bookingSuccess": "Your reservation was created successfully! You will receive a confirmation email soon.",
+    "bookingError": "Failed to create reservation. Please try again.",
+    "bookingOverlap": "The selected dates are already booked. Please choose different dates.",
+    "locale": "en",
+    "aboutTitle": "About the property",
+    "availabilityTitle": "Availability",
+    "checkinTitle": "Online Check-in",
+    "infoTitle": "Guest Information",
+    "contactTitle": "Contact",
+    "poweredBy": "Powered by DeeCheckIn",
+    "actionCheckin": "Online Check-in",
+    "actionCheckinDesc": "Fill in your details for online check-in.",
+    "actionAvailability": "Availability",
+    "actionAvailabilityDesc": "Check available dates.",
+    "actionContact": "Contact",
+    "actionContactDesc": "Have a question? Get in touch.",
+    "available": "Available",
+    "occupied": "Occupied",
+    "today": "Today",
+    "checkinDescription": "Enter your reservation number for online check-in or to view stay instructions.",
+    "checkinVerified": "Check-in confirmed ✅",
+    "checkinVerifiedDesc": "Accommodation details are now available below.",
+    "addressLabel": "Address",
+    "accessCodeLabel": "Access code",
+    "lockedHint": "Available after verifying your reservation number",
+    "wifiNetwork": "Network",
+    "wifiPassword": "Password",
+    "houseRulesLabel": "House rules",
+    "hostNote": "Note from the host",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "copy": "Copy",
+    "slug": "URL slug",
+    "slugPlaceholder": "e.g. cosy-cave-station",
+    "slugHelp": "Public page address: /p/{slug}",
+    "description": "Guest description",
+    "descriptionPlaceholder": "Short description for the public page...",
+    "publicPageEnabled": "Public page active",
+    "publicPageLink": "Public page link",
+    "notFound": "Page not found",
+    "notFoundDesc": "This public page does not exist or is not active."
+  },
+  "IndependentCheckin": {
+    "pageTitle": "Online Check-in",
+    "pageSubtitle": "Please fill in the following details to register your stay.",
+    "step": {
+      "stayInfo": "Stay",
+      "guestData": "Guest Details",
+      "review": "Review"
+    },
+    "stayDates": "Stay Dates",
+    "checkInDate": "Check-in Date",
+    "checkOutDate": "Check-out Date",
+    "guestCount": "Number of Guests",
+    "guestCountHint": "Select the number of guests including children.",
+    "guestLabel": "Guest {number}",
+    "primaryGuest": "primary",
+    "addGuest": "Add guest",
+    "removeGuest": "Remove",
+    "reviewTitle": "Review your details",
+    "reviewDescription": "Please review the information below before submitting.",
+    "reviewDates": "Stay Dates",
+    "reviewGuests": "Guests: {count}",
+    "foreignerDocumentNotice": "Foreign nationals are required to provide travel document details per Czech law (Act No. 326/1999).",
+    "section": {
+      "personalInfo": "Personal Information",
+      "identityDocument": "Identity Document",
+      "address": "Permanent Address",
+      "stayDetails": "Stay Details"
+    },
+    "field": {
+      "firstName": { "label": "First Name" },
+      "lastName": { "label": "Last Name" },
+      "birthDate": { "label": "Date of Birth" },
+      "nationality": {
+        "label": "Nationality",
+        "placeholder": "e.g. CZ, Czech Republic"
+      },
+      "documentType": {
+        "label": "Document Type",
+        "select": "Select document type",
+        "op": "ID Card",
+        "pas": "Passport",
+        "jine": "Other"
+      },
+      "documentNumber": { "label": "Document Number" },
+      "issuingCountry": {
+        "label": "Issuing Country",
+        "placeholder": "e.g. Germany, Slovakia..."
+      },
+      "addressStreet": { "label": "Street and Number" },
+      "addressCity": { "label": "City" },
+      "addressZip": { "label": "ZIP Code" },
+      "addressCountry": { "label": "Country" },
+      "stayPurpose": {
+        "label": "Purpose of Stay",
+        "select": "Select purpose",
+        "rekreace": "Recreation",
+        "sluzebni": "Business",
+        "jine": "Other"
+      },
+      "phone": { "label": "Phone (optional)" },
+      "email": { "label": "Email (optional)" },
+      "consent": {
+        "label": "Consent to data processing",
+        "text": "I declare that all information provided is accurate and I consent to its processing for accommodation purposes."
+      }
+    },
+    "dataCollectionNotice": {
+      "title": "Data Processing Information",
+      "text": "In accordance with Czech legislation (Act No. 565/1990 and Act No. 326/1999), we are required to collect and store personal data for accommodation purposes."
+    },
+    "button": {
+      "submit": "Submit Check-in",
+      "submitting": "Submitting...",
+      "continue": "Continue",
+      "back": "Back"
+    },
+    "success": {
+      "title": "Check-in completed!",
+      "message": "Thank you for completing the check-in form. Enjoy your stay!",
+      "backToProperty": "Back to property page"
+    },
+    "validation": {
+      "required": "This field is required.",
+      "dateFormat": "Please enter a date in YYYY-MM-DD format.",
+      "invalidEmail": "Please enter a valid email address.",
+      "consentRequired": "Your consent is required to continue.",
+      "atLeastOneGuest": "At least one guest is required.",
+      "checkOutAfterCheckIn": "Check-out date must be after check-in date."
+    }
+  },
+  "landing": {
+    "heroTitle": "Welcome",
+    "heroSubtitle": "Choose your accommodation and complete your online check-in.",
+    "ctaLogin": "Log in",
+    "noProperties": "No accommodation units are currently available.",
+    "viewDetail": "Details",
+    "checkin": "Check-in",
+    "footer": "© {year} DeeCheckIn"
+  },
+  "guests": "Guests",
+  "adminGuests": {
+    "title": "Unpaired Guests",
+    "description": "Check-ins without an assigned reservation",
+    "noUnpaired": "All guests are assigned to reservations.",
+    "guestCount": "{count} guests",
+    "checkinDate": "Check-in",
+    "checkoutDate": "Check-out",
+    "createdAt": "Created",
+    "pair": "Pair",
+    "pairDialogTitle": "Pair with reservation",
+    "pairDialogDescription": "Select a reservation to pair this guest group with.",
+    "noMatchingReservations": "No matching reservations found.",
+    "pairSuccess": "Guests successfully paired with reservation.",
+    "pairError": "Failed to pair guests.",
+    "reservation": "Reservation",
+    "property": "Property",
+    "guestNames": "Guests in group"
   }
 }

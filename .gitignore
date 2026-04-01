@@ -1,4 +1,10 @@
 node_modules
-setup.ts
 .next
 .env.local
+
+# Debug / temp scripts
+_test_db.js
+setup.ts
+
+# One-time migration files
+supabase/migration_phase1.sql

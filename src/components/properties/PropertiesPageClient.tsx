@@ -9,7 +9,9 @@ import {
   updatePropertyAction,
   deletePropertyAction,
 } from "@/actions/properties";
+import { syncPropertyAction } from "@/actions/ical-sync";
 import { PropertiesTable } from "./PropertiesTable";
+import { PropertySettingsDialog } from "./PropertySettingsDialog";
 import {
   Dialog,
   DialogContent,
@@ -47,10 +49,36 @@ export function PropertiesPageClient({
   const [editForm, setEditForm] = useState({ name: "", address: "" });
   const [addForm, setAddForm] = useState({ name: "", address: "" });
   const [showAddModal, setShowAddModal] = useState(false);
+  const [settingsProperty, setSettingsProperty] = useState<Property | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
+  const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
   const handleMutationSuccess = () => {
     router.refresh();
+  };
+
+  const handleSync = (property: Property) => {
+    setError(null);
+    setSyncMessage(null);
+
+    startTransition(async () => {
+      const result = await syncPropertyAction(property.id);
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+      const d = result.data;
+      setSyncMessage(
+        t("syncSuccess", {
+          created: d.created,
+          updated: d.updated,
+          cancelled: d.cancelled,
+        }),
+      );
+      handleMutationSuccess();
+    });
   };
 
   const handleEdit = (property: Property) => {
@@ -135,11 +163,19 @@ export function PropertiesPageClient({
         </div>
       )}
 
+      {syncMessage && (
+        <div className="rounded-md bg-green-50 dark:bg-green-950/30 p-3 text-sm text-green-700 dark:text-green-400 mb-4">
+          {syncMessage}
+        </div>
+      )}
+
       <PropertiesTable
         properties={initialProperties}
         onEdit={handleEdit}
         onDelete={(p) => setDeletingProperty(p)}
         onView={(p) => setViewingProperty(p)}
+        onSettings={(p) => setSettingsProperty(p)}
+        onSync={handleSync}
       />
 
       {/* Add Dialog */}
@@ -317,6 +353,13 @@ export function PropertiesPageClient({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Settings Dialog */}
+      <PropertySettingsDialog
+        property={settingsProperty}
+        open={!!settingsProperty}
+        onOpenChange={(open) => !open && setSettingsProperty(null)}
+      />
     </>
   );
 }

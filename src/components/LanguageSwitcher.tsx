@@ -1,5 +1,6 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter, usePathname } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 
 const locales = [
   { code: "cs", label: "Čeština" },
@@ -9,13 +10,11 @@ const locales = [
 export default function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
-  const currentLocale = pathname.split("/")[1];
+  const currentLocale = useLocale();
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLocale = e.target.value;
-    const segments = pathname.split("/").filter(Boolean);
-    segments[0] = newLocale;
-    router.push("/" + segments.join("/"));
+    router.replace(pathname, { locale: newLocale });
   };
 
   return (

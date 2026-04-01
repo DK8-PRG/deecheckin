@@ -1,10 +1,20 @@
-import { createServerClient, getUser } from "@/lib/supabase/server";
+import {
+  createServerClient,
+  getUser,
+  createAdminClient,
+} from "@/lib/supabase/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
   Reservation,
   ReservationInsert,
   ReservationUpdate,
   PropertyOption,
 } from "@/types/reservation";
+
+// Helper: resolve supabase client (passed or cookie-based)
+async function resolveClient(client?: SupabaseClient) {
+  return client ?? (await createServerClient());
+}
 
 // ---------------------------------------------------------------------------
 // Reservations repository — SOLE place that talks to Supabase
@@ -51,8 +61,9 @@ export async function create(input: ReservationInsert): Promise<Reservation> {
 export async function update(
   id: string,
   input: ReservationUpdate,
+  client?: SupabaseClient,
 ): Promise<Reservation> {
-  const supabase = await createServerClient();
+  const supabase = await resolveClient(client);
   const { data, error } = await supabase
     .from("reservations")
     .update(input)
@@ -74,7 +85,8 @@ export async function remove(id: string): Promise<void> {
 export async function findByBookNumber(
   bookNumber: string,
 ): Promise<Reservation | null> {
-  const supabase = await createServerClient();
+  // Use admin client to bypass RLS — guests are not authenticated
+  const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("reservations")
     .select("*")
@@ -89,10 +101,11 @@ export async function updateStatusByBookNumber(
   bookNumber: string,
   status: string,
 ): Promise<void> {
-  const supabase = await createServerClient();
+  // Use admin client to bypass RLS — called from public check-in flow
+  const supabase = createAdminClient();
   const { error } = await supabase
     .from("reservations")
-    .update({ reservation_status: status })
+    .update({ status: status })
     .eq("book_number", bookNumber);
 
   if (error) throw new Error(error.message);
@@ -135,4 +148,54 @@ export async function findAllProperties(): Promise<PropertyOption[]> {
 
   if (error) throw new Error(error.message);
   return (data ?? []) as PropertyOption[];
+}
+
+// ---------------------------------------------------------------------------
+// iCal sync helpers
+// ---------------------------------------------------------------------------
+
+export async function findByIcalUid(
+  icalUid: string,
+): Promise<Reservation | null> {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from("reservations")
+    .select("*")
+    .eq("ical_uid", icalUid)
+    .single();
+
+  if (error && error.code !== "PGRST116") throw new Error(error.message);
+  return (data as Reservation) ?? null;
+}
+
+export async function findByPropertyAndSource(
+  propertyId: string,
+  source: string,
+  client?: SupabaseClient,
+): Promise<Reservation[]> {
+  const supabase = await resolveClient(client);
+  const { data, error } = await supabase
+    .from("reservations")
+    .select("*")
+    .eq("property_id", propertyId)
+    .eq("source", source)
+    .not("ical_uid", "is", null);
+
+  if (error) throw new Error(error.message);
+  return (data ?? []) as Reservation[];
+}
+
+export async function createWithUserId(
+  input: ReservationInsert & { user_id: string },
+  client?: SupabaseClient,
+): Promise<Reservation> {
+  const supabase = await resolveClient(client);
+  const { data, error } = await supabase
+    .from("reservations")
+    .insert(input)
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return data as Reservation;
 }

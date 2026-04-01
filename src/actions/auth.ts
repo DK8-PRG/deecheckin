@@ -36,5 +36,5 @@ export async function signUp(email: string, password: string) {
 export async function signOut(locale: string) {
   const supabase = await createServerClient();
   await supabase.auth.signOut();
-  redirect(`/${locale}/login`);
+  redirect(`/${locale}/admin/login`);
 }

@@ -21,13 +21,35 @@ export async function getById(id: string): Promise<Reservation | null> {
   return reservationsRepo.findById(id);
 }
 
+/** Check for overlapping reservations on the same property. */
+export async function checkOverlap(
+  propertyId: string,
+  checkIn: string,
+  checkOut: string,
+  excludeId?: string,
+): Promise<Reservation[]> {
+  return reservationsRepo.findOverlapping(
+    propertyId,
+    checkIn,
+    checkOut,
+    excludeId,
+  );
+}
+
 export async function create(
   input: CreateReservationInput,
-): Promise<Reservation> {
+): Promise<{ reservation: Reservation; overlaps: Reservation[] }> {
   // Business rule: check_out must be after check_in
   if (input.check_out <= input.check_in) {
     throw new Error("Datum odjezdu musí být po datu příjezdu");
   }
+
+  // Check for overlaps
+  const overlaps = await reservationsRepo.findOverlapping(
+    input.property_id,
+    input.check_in,
+    input.check_out,
+  );
 
   const insertData: ReservationInsert = {
     property_id: input.property_id,
@@ -45,13 +67,14 @@ export async function create(
     special_requests: input.special_requests,
   };
 
-  return reservationsRepo.create(insertData);
+  const reservation = await reservationsRepo.create(insertData);
+  return { reservation, overlaps };
 }
 
 export async function update(
   id: string,
   input: UpdateReservationInput,
-): Promise<Reservation> {
+): Promise<{ reservation: Reservation; overlaps: Reservation[] }> {
   // Verify existence
   const existing = await reservationsRepo.findById(id);
   if (!existing) {
@@ -65,11 +88,20 @@ export async function update(
     throw new Error("Datum odjezdu musí být po datu příjezdu");
   }
 
+  // Check for overlaps (excluding self)
+  const overlaps = await reservationsRepo.findOverlapping(
+    input.property_id ?? existing.property_id,
+    checkIn,
+    checkOut,
+    id,
+  );
+
   const updateData: ReservationUpdate = Object.fromEntries(
     Object.entries(input).filter(([, v]) => v !== undefined),
   );
 
-  return reservationsRepo.update(id, updateData);
+  const reservation = await reservationsRepo.update(id, updateData);
+  return { reservation, overlaps };
 }
 
 export async function remove(id: string): Promise<void> {

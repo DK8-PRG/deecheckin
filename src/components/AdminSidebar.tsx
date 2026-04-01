@@ -10,17 +10,29 @@ import {
   LayoutDashboard,
   Building2,
   CalendarCheck,
-  ClipboardCheck,
+  Users,
   Menu,
   X,
   LogOut,
 } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
-  { href: "/properties", labelKey: "accommodationUnits", icon: Building2 },
-  { href: "/reservations", labelKey: "reservations", icon: CalendarCheck },
-  { href: "/checkin", labelKey: "checkin", icon: ClipboardCheck },
+  { href: "/admin/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
+  {
+    href: "/admin/properties",
+    labelKey: "accommodationUnits",
+    icon: Building2,
+  },
+  {
+    href: "/admin/reservations",
+    labelKey: "reservations",
+    icon: CalendarCheck,
+  },
+  {
+    href: "/admin/guests",
+    labelKey: "guests",
+    icon: Users,
+  },
 ];
 
 const AdminSidebar = () => {
@@ -36,7 +48,11 @@ const AdminSidebar = () => {
     <>
       {/* Logo */}
       <div className="px-4 py-6 border-b border-sidebar-border">
-        <Link href="/dashboard" className="flex items-center gap-2.5" replace>
+        <Link
+          href="/admin/dashboard"
+          className="flex items-center gap-2.5"
+          replace
+        >
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
             <span className="text-sm font-bold text-primary-foreground">D</span>
           </div>

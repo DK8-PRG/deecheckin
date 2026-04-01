@@ -45,5 +45,5 @@ export async function GET(request: NextRequest) {
   // If code exchange failed or no code, redirect to login
   const localeMatch = /^\/(cs|en)/.exec(request.nextUrl.pathname);
   const locale = localeMatch ? localeMatch[1] : "cs";
-  return NextResponse.redirect(new URL(`/${locale}/login`, origin));
+  return NextResponse.redirect(new URL(`/${locale}/admin/login`, origin));
 }
